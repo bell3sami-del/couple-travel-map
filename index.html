@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>우리 둘의 여행 지도</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>body{margin:0;background:#101e2c;color:#f6f6f6;font-family:system-ui,sans-serif}header{padding:20px;background:#172a3d}h1{margin:0 0 8px;font-size:25px}.sub{color:#b6c9d5}#map{height:57vh;min-height:350px}main{padding:18px;max-width:950px;margin:auto}button,select{padding:11px;border-radius:10px;border:0;background:#fff;color:#142638;margin:4px}button{cursor:pointer}.panel{background:#20364a;border-radius:15px;padding:14px;margin-top:12px}.trip{display:flex;gap:12px;align-items:center;padding:9px;border-bottom:1px solid #405365}.trip label{flex:1}.trip small{color:#b6c9d5}input[type=checkbox]{width:20px;height:20px}.leaflet-container{background:#a7d4e2}footer{color:#b6c9d5;padding:15px;font-size:12px}</style></head>
+<body><header><h1>✈️ 우리 둘의 여행 지도</h1><div class="sub">2018–2026 · 함께한 여행을 선택하고 경로를 재생해요</div></header>
+<div id="map"></div><main><div class="panel"><button id="play">▶ 여행 재생</button><button id="reset">↺ 처음부터</button><label>연도 <select id="year"><option value="all">전체</option></select></label><div id="status" class="sub"></div></div>
+<div class="panel"><h3>💕 함께 다녀온 여행 체크</h3><p class="sub">원본 다이빙 로그에는 부부 동행 여부가 없어 기본값은 모두 미선택이에요. 체크 내용은 이 브라우저에만 저장됩니다.</p><div id="trips"></div></div></main><footer>여행지 좌표는 지역 중심의 근삿값입니다. 개인 사진과 개인정보는 저장소에 포함하지 않았습니다.</footer>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const places={보홀:[9.65,123.85],제주:[33.48,126.53],사이판:[15.19,145.75],모알보알:[9.94,123.40],아날라오:[13.76,120.93],고성:[38.38,128.47],팔라우:[7.5,134.62],울진:[36.99,129.4],강릉:[37.75,128.9],영덕:[36.41,129.37],양양:[38.08,128.62],대전:[36.35,127.38],울릉도:[37.49,130.9],릴로안:[9.45,123.3],라파즈:[24.14,-110.31],베르데:[13.55,120.93],오키나와:[26.21,127.68],시파단:[4.11,118.63],홍해:[27.26,33.81],코모도:[-8.55,119.49],반다해:[-4.5,129.9],키커락:[-0.78,-89.51],갈라파고스:[-0.95,-90.97],푸껫:[7.88,98.39],시밀란:[8.65,97.65],이시가키:[24.34,124.16]};
+const raw=[
+[2018,'06','보홀'],[2018,'09','제주'],[2018,'09','사이판'],[2018,'12','보홀'],
+[2019,'03','모알보알'],[2019,'06','사이판'],[2019,'07','아날라오'],[2019,'09','고성'],[2019,'10','아날라오'],[2019,'12','팔라우'],
+[2020,'04','제주'],[2020,'06','제주'],[2020,'06','울진'],[2020,'07','울진'],[2020,'09','제주'],[2020,'10','제주'],[2020,'10','강릉'],[2020,'11','영덕'],
+[2021,'08','제주'],[2021,'08','양양'],[2021,'08','고성'],[2021,'09','제주'],[2021,'10','제주'],[2021,'10','제주'],[2021,'10','대전'],[2021,'10','울릉도'],[2021,'11','제주'],
+[2022,'05','릴로안'],[2022,'09','라파즈'],[2022,'10','울릉도'],[2022,'11','베르데'],
+[2023,'01','보홀'],[2023,'03','오키나와'],[2023,'05','시파단'],[2023,'06','릴로안'],[2023,'06','사이판'],[2023,'07','홍해'],[2023,'08','코모도'],
+[2024,'04','아날라오'],[2024,'06','라파즈'],[2024,'09','반다해'],[2024,'09','시파단'],
+[2025,'04','라파즈'],[2025,'04','제주'],[2025,'05','팔라우'],[2025,'08','양양'],[2025,'09','제주'],[2025,'10','키커락'],[2025,'10','갈라파고스'],
+[2026,'03','푸껫'],[2026,'03','시밀란'],[2026,'06','오키나와'],[2026,'10','제주'],[2026,'11','이시가키']
+];
+const trips=raw.map((r,i)=>({id:i,year:r[0],month:r[1],place:r[2],coord:places[r[2]]}));
+let selected=new Set(JSON.parse(localStorage.getItem('coupleTrips')||'[]')),map=L.map('map').setView([17,95],3),layers=L.layerGroup().addTo(map),timer=null,shown=0;
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors',maxZoom:18}).addTo(map);
+const year=document.getElementById('year'),list=document.getElementById('trips'),status=document.getElementById('status');
+[...new Set(trips.map(t=>t.year))].forEach(y=>{let o=document.createElement('option');o.value=y;o.textContent=y+'년';year.append(o)});
+function filtered(){return trips.filter(t=>selected.has(t.id)&&(year.value==='all'||t.year===+year.value))}
+function draw(count){layers.clearLayers();let arr=filtered().slice(0,count),prev=null;arr.forEach((t,i)=>{let marker=L.marker(t.coord).bindPopup('💕 '+t.year+'.'+t.month+' '+t.place).addTo(layers);if(prev)L.polyline([prev.coord,t.coord],{color:'#ff914d',weight:3,dashArray:'7 8'}).addTo(layers);prev=t});status.textContent='선택된 여행 '+filtered().length+'개 · 지도 표시 '+arr.length+'개';if(arr.length&&count<filtered().length+1)map.panTo(arr[arr.length-1].coord,{animate:true})}
+function stop(){if(timer){clearInterval(timer);timer=null}document.getElementById('play').textContent='▶ 여행 재생'}
+function render(){list.innerHTML='';trips.filter(t=>year.value==='all'||t.year===+year.value).forEach(t=>{let row=document.createElement('div');row.className='trip';let check=document.createElement('input');check.type='checkbox';check.checked=selected.has(t.id);check.addEventListener('change',()=>{check.checked?selected.add(t.id):selected.delete(t.id);localStorage.setItem('coupleTrips',JSON.stringify([...selected]));stop();draw(Infinity)});let label=document.createElement('label');label.textContent=t.place;let date=document.createElement('small');date.textContent=t.year+'.'+t.month;row.append(check,label,date);list.append(row)});draw(Infinity)}
+year.onchange=()=>{stop();render()};document.getElementById('reset').onclick=()=>{stop();draw(0)};
+document.getElementById('play').onclick=()=>{if(timer){stop();return}let arr=filtered();if(!arr.length){alert('함께한 여행을 먼저 체크해 주세요.');return}shown=0;draw(0);document.getElementById('play').textContent='⏸ 멈추기';timer=setInterval(()=>{shown++;draw(shown);if(shown>=arr.length)stop()},850)};
+render();
+</script></body></html>

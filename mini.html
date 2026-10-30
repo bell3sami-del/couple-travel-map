@@ -14,7 +14,7 @@ let photos=new Map(),visible=[],visited=0,timer=null,playing=false,routePoints=[
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','"':'&quot;',"'":'&#39;'}[c]));
 const placeholder='<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="9" cy="9" r="3"/><path d="M3 25l9-10 6 6 5-5 6 9"/></svg>';
 for(const y of [...new Set(trips.map(t=>t.year))].sort((a,b)=>b-a))year.insertAdjacentHTML('beforeend','<option value="'+y+'">'+y+'년</option>');
-function filterTrips(){return trips.filter(t=>t.place!=='푸껫'&&(year.value==='all'||t.year===Number(year.value))&&(region.value==='all'||(region.value==='domestic')===domesticPlaces.has(t.place))&&(people.value==='both'?(t.jihee>0||t.jongsang>0):people.value==='jihee'?t.jihee>0:t.jongsang>0));}
+function filterTrips(){return trips.filter(t=>t.place!=='푸껫'&&(year.value==='all'||t.year===Number(year.value))&&(region.value==='all'||(region.value==='domestic')===domesticPlaces.has(t.place))&&(people.value==='both'?(t.jihee>0&&t.jongsang>0):people.value==='jihee'?t.jihee>0:t.jongsang>0));}
 function halt(){playing=false;if(frame)cancelAnimationFrame(frame);frame=null;lastFrame=0;play.textContent='▶ 여행 시작'}
 function draw(){
  halt();visible=filterTrips();visited=0;travelDistance=0;leg=0;legElapsed=0;pauseLeft=0;routePath=null;

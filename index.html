@@ -213,8 +213,8 @@ function openTrip(t,node){
  const popupWidth=Math.min(210,container.width*.58),margin=8;
  const left=centerX+rect.width/2+margin+popupWidth<=container.width?centerX+rect.width/2+margin:Math.max(0,centerX-rect.width/2-popupWidth-margin);
  overlay.style.left=Math.max(0,left)+'px';overlay.style.top=Math.max(0,centerY-rect.height/2-12)+'px';
- const count=v=>v==null?'미기재':v+'회';
- info.innerHTML='<div style="color:#9fe9fa;font-size:12px;letter-spacing:2px">OUR DIVE LOGBOOK</div><h2 id="trip-title">'+esc(t.place)+(t.planned?' · 예정':'')+'</h2><p>📅 '+t.year+'.'+t.month+(t.detail?' · '+esc(t.detail):'')+'</p><p>🤿 '+esc(t.shop||'다이빙샵 미기재')+'</p><div class="log-grid"><div class="log-count"><small>지희 로그</small><b>'+count(t.jihee)+'</b></div><div class="log-count"><small>종상 로그</small><b>'+count(t.jongsang)+'</b></div></div><div class="note">'+(t.planned?'예정 로그입니다. 실제 다이빙 후 기록을 갱신해 주세요.':'로그북에 기록된 해당 여행의 다이빙 횟수입니다.')+'</div>';
+ const count=v=>(v==null?0:v)+'회';
+ info.innerHTML='<div style="color:#9fe9fa;font-size:12px;letter-spacing:2px">OUR DIVE LOGBOOK</div><h2 id="trip-title">'+esc(t.place)+(t.planned?' · 예정':'')+'</h2><p>📅 '+t.year+'.'+t.month+(t.detail?' · '+esc(t.detail):'')+'</p><p>🤿 '+esc(t.shop||'다이빙샵 미기재')+'</p><div class="log-grid"><div class="log-count"><small>지희</small><b>'+count(t.jihee)+'</b></div><div class="log-count"><small>종상</small><b>'+count(t.jongsang)+'</b></div></div><div class="note">'+(t.planned?'예정 로그입니다. 실제 다이빙 후 기록을 갱신해 주세요.':'로그북에 기록된 해당 여행의 다이빙 횟수입니다.')+'</div>';
  overlay.hidden=false;document.getElementById('trip-close').focus();
 }
 function closeTrip(){overlay.hidden=true;if(tripPaused){tripPaused=false;if(resumeAnimation&&phase!=='idle'){phaseStart+=performance.now()-pausedAt;raf=requestAnimationFrame(animate)}}resumeAnimation=false}

@@ -24,6 +24,32 @@ body{background:#052b48;color:#e9faff}
 .toolbar select option{background:#0b4b71;color:#fff}
 .stats{color:#c9eefa;font-size:13px;letter-spacing:.1px}
 @media(max-width:650px){.wrap{padding:15px 10px 50px}.play-row #play{min-height:62px;font-size:20px}.toolbar select{flex:1 1 42%;max-width:none;min-height:46px;padding:10px 34px 10px 13px;font-size:14px}.toolbar select:last-child{flex-basis:100%}}
+
+/* Theme preview 02 — Sunset Warm. Visual-only override; easy to revert. */
+body{background:#332e40;color:#fff4ed}
+.wrap{background:radial-gradient(ellipse at 50% 0%,#a77791 0%,#cf8790 17%,#edab86 36%,#a46b78 60%,#554353 82%,#302d3b 100%);box-shadow:0 0 65px #251b3550}
+.wrap:before{opacity:.28;background:linear-gradient(158deg,#ffe4b12e 0%,transparent 35%,#fbd0b30b 58%,transparent 100%),repeating-radial-gradient(circle at 50% 6%,transparent 0 100px,#fff0df12 102px 104px,transparent 106px 195px)}
+.wrap:after{opacity:.14}
+.heading h1{color:#fff9f3;text-shadow:0 3px 18px #52324970;letter-spacing:-1.7px}
+.heading p{color:#fff0e6}
+.eyebrow{color:#ffe6ce}
+.badge{background:#fff4e62c;border-color:#ffe8d08c;color:#fff7eb}
+.character{background:#573e5070;border-color:#ffdfd080;box-shadow:0 12px 36px #3d233850}
+.character strong{color:#fff6ec}
+.photo-manager-link a{background:#593b4a4a;border:1px solid #ffe2d099;color:#fff6f1;box-shadow:0 4px 14px #40263926}
+.play-row #play,.play-row #play:hover{background:linear-gradient(110deg,#ffbb67 0%,#f58676 53%,#e96e89 100%)!important;border:1px solid #ffe3c5c9;color:#fff!important;box-shadow:0 9px 25px #713c5570,0 1px 0 #fff6e188 inset;text-shadow:0 1px 2px #713e4660}
+.toolbar select{background-color:#674756;border-color:#ffdfce8c;color:#fff9f5;box-shadow:0 4px 14px #43293a35;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23fff0e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")}
+.toolbar select option{background:#674756;color:#fff}
+.stats{color:#fff0e6}
+.timeline{background:linear-gradient(180deg,#fff0df12,#3b28351c);box-shadow:inset 0 0 80px #ffe6d910}
+.node-label{fill:#fffaf5;stroke:#573d50}
+.node-date{fill:#ffe6d2;stroke:#573d50}
+.route{stroke:#ffe5d328}
+.route-inner{stroke:#ffddc799}
+.route-completed{stroke:#f8a78e;filter:drop-shadow(0 2px 3px #6d3d5055)}
+.trip-dialog{border-color:#f4d4c2}
+.footer{color:#fff0e6}
+@media(max-width:650px){.wrap{padding:15px 10px 50px}}
 </style></head>
 <body><div class="wrap"><header class="heading"><div class="eyebrow">OUR OCEAN JOURNEY</div><span class="badge">함께한 바다의 기록</span><h1>우리 둘의<br>바다 여행 연대기 💙</h1><p>하나의 길 위에 쌓여가는 소중한 여행들</p><div class="characters"><div class="character" style="width:min(100%,420px)"><img src="assets/couple-fullbody.png?v=transparent2" alt="검정 잠수복과 카메라를 든 남편, 흰색 마스크와 고프로를 든 아내의 전신 일러스트" style="width:100%;height:auto;border-radius:14px;display:block"><strong>우리 둘의 바다 여행</strong></div></div></header>
 <div class="photo-manager-link"><a href="photos.html">📷 여행 사진 등록·관리</a></div><div class="play-row"><button class="primary" id="play">▶ 여행 시작</button></div><div class="toolbar"><select id="year"><option value="all">전체 연도</option></select><select id="region" aria-label="국내 해외 여행 필터"><option value="all">국내 + 해외</option><option value="domestic">🇰🇷 국내만</option><option value="international">🌏 해외만</option></select><select id="people" aria-label="다이빙 동행자 필터"><option value="both">💞 둘 다</option><option value="jongsang">🤿 종상</option><option value="jihee">🤿 지희</option></select></div><div class="stats" id="status"></div><div class="timeline" id="timeline"><div id="trip-overlay" class="trip-overlay" hidden><section class="trip-dialog" role="dialog" aria-modal="false" aria-labelledby="trip-title"><button id="trip-close" class="trip-close" aria-label="닫기">✕</button><div id="trip-info"></div></section></div></div><section id="photo-credits" class="photo-credits" aria-label="사진 출처"></section><div class="footer">앞으로도 함께할 바다를 기다리며 🐬</div></div>

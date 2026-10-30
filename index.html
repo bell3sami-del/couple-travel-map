@@ -75,6 +75,44 @@ body{background:#f7f8f7;color:#19232d}
  border:1.5px solid #26323a!important;
 }
 .trip-close:hover{background:#e2e5e7!important}
+
+/* Desktop: one-viewport illustrated travel atlas; mobile layout unchanged */
+@media(min-width:1100px){
+ html,body{height:100%;overflow:hidden}
+ .wrap{max-width:none;width:100%;height:100dvh;min-height:0;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:92px minmax(0,1fr) 0;padding:0 18px 0!important}
+ .heading{grid-row:1;display:flex;align-items:center;text-align:left;gap:16px;padding:5px 12px!important;min-width:0}
+ .heading .eyebrow{font-size:10px;letter-spacing:2px;white-space:nowrap}
+ .heading .badge{display:none}
+ .heading h1{font-size:22px!important;line-height:1.1;margin:0!important;white-space:nowrap}
+ .heading .characters{order:-1;margin:0;flex-shrink:0}
+ .heading .character{width:96px!important;max-width:96px!important;border:0;background:transparent;box-shadow:none;padding:0!important}
+ .photo-manager-link{position:absolute;right:14px;top:17px;z-index:4;margin:0}
+ .photo-manager-link a{font-size:12px;padding:10px}
+ .play-row{position:absolute;top:12px;right:430px;margin:0;z-index:4}
+ .play-row #play{min-height:45px!important;width:140px!important;font-size:15px!important;border-radius:30px}
+ .toolbar{position:absolute;top:13px;right:145px;margin:0;z-index:4;gap:5px}
+ .toolbar select{flex:none;min-width:0;max-width:none;width:96px;padding:11px 24px 11px 9px;font-size:11px;border-radius:22px}
+ .stats{position:absolute;top:91px;right:30px;z-index:2;font-size:11px}
+ .timeline{grid-row:2;min-height:0;overflow:hidden;width:100%;padding:0!important}
+ .timeline>svg{height:100%;width:100%;object-fit:fill;overflow:visible}
+ .node-date{font-size:10px}
+ .node-label{font-size:11px}
+ .node-stop .node-circle{stroke-width:2!important}
+ .route{stroke-width:5}
+ .route-inner{stroke-width:2}
+ .route-colored{stroke-width:3}
+ .traveler-photo{opacity:.95}
+ .footer{display:none}
+ .trip-overlay{position:fixed!important;left:auto!important;right:16px!important;top:105px!important;width:330px!important;max-width:calc(100vw - 32px);z-index:1000!important}
+ .trip-dialog{width:100%!important;max-height:calc(100dvh - 130px)!important;padding:20px!important;border-radius:22px!important}
+ .trip-dialog h2{font-size:23px!important}
+ .trip-dialog p{font-size:13px!important}
+ .trip-dialog .log-grid{gap:10px!important;margin:15px 0!important}
+ .trip-dialog .log-count{padding:12px!important}
+ .trip-dialog .log-count b{font-size:25px!important}
+ .trip-dialog .log-count small,.trip-dialog .note{font-size:12px!important}
+ .trip-close{width:32px!important;height:32px!important;font-size:18px!important}
+}
 </style></head>
 <body><div class="wrap"><header class="heading"><div class="eyebrow">OUR OCEAN JOURNEY</div><span class="badge">함께한 바다의 기록</span><h1>종상 지희<br>바다 여행 연대기 💙</h1><div class="characters"><div class="character" style="width:min(100%,420px)"><img src="assets/couple-fullbody.png?v=transparent2" alt="검정 잠수복과 카메라를 든 남편, 흰색 마스크와 고프로를 든 아내의 전신 일러스트" style="width:100%;height:auto;border-radius:14px;display:block"></div></div></header>
 <div class="photo-manager-link"><a href="photos.html">📷 여행 사진 등록·관리</a></div><div class="play-row"><button class="primary" id="play">▶ 여행 시작</button></div><div class="toolbar"><select id="year"><option value="all">전체 연도</option></select><select id="region" aria-label="국내 해외 여행 필터"><option value="all">국내 + 해외</option><option value="domestic">🇰🇷 국내만</option><option value="international">🌏 해외만</option></select><select id="people" aria-label="다이빙 동행자 필터"><option value="both">💞 둘 다</option><option value="jongsang">🤿 종상</option><option value="jihee">🤿 지희</option></select></div><div class="stats" id="status"></div><div class="timeline" id="timeline"><div id="trip-overlay" class="trip-overlay" hidden><section class="trip-dialog" role="dialog" aria-modal="false" aria-labelledby="trip-title"><button id="trip-close" class="trip-close" aria-label="닫기">✕</button><div id="trip-info"></div></section></div></div><div class="footer">앞으로도 함께할 바다를 기다리며 🐬</div></div>
@@ -143,22 +181,22 @@ function data(){return trips.filter(t=>{
 function stop(){if(timer)clearInterval(timer);timer=null;if(raf)cancelAnimationFrame(raf);raf=null;phase='idle';document.getElementById('play').textContent='▶ 여행 시작'}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function draw(){if(!overlay.hidden)closeTrip();const arr=data(),visible=arr;status.textContent='조건에 맞는 여행 '+arr.length+'곳 · 표시 중 '+Math.min(shown,arr.length)+'곳';if(!arr.length){timeline.querySelectorAll('svg,.empty').forEach(el=>el.remove());timeline.insertAdjacentHTML('afterbegin','<p class="empty">조건에 맞는 여행이 없어요 🐠<br>필터를 변경해 주세요</p>');return}
-const W=660,top=165;
-// 여행 사이의 시간 간격에 따라 세로 이동 거리 조절 (최소 85 ~ 최대 245 SVG 단위)
-// 날짜가 미기재된 여행은 해당 월의 중순을 임시 기준으로 계산
+const desktop=window.matchMedia('(min-width:1100px)').matches;
+const W=desktop?1000:660,top=desktop?105:165;
 const tripDate=t=>{const match=t.detail?.match(/(\d{1,2})\/(\d{1,2})/);return Date.UTC(t.year,Number(t.month)-1,match?Number(match[2]):15)};
 const gapFor=(prev,next)=>{const days=Math.max(0,(tripDate(next)-tripDate(prev))/86400000);return Math.min(160,Math.max(58,58+Math.sqrt(days)*6.9))};
 const lanes=[115,510,290,155,535,420,120,340,530,190,460,110,355,520,245,125,470,315,540,175,390,115,515,275];
 let currentY=top;
-const coords=visible.map((t,i)=>{if(i)currentY+=gapFor(visible[i-1],t);return {x:lanes[i%lanes.length]+Math.sin(i*2.37)*19,y:currentY,t,i}});
+const desktopCols=10,desktopX=Array.from({length:desktopCols},(_,i)=>68+i*96);
+const coords=visible.map((t,i)=>{if(desktop){const row=Math.floor(i/desktopCols),col=i%desktopCols;return {x:desktopX[row%2?desktopCols-1-col:col],y:top+row*115,t,i}}if(i)currentY+=gapFor(visible[i-1],t);return {x:lanes[i%lanes.length]+Math.sin(i*2.37)*19,y:currentY,t,i}});
 const home={x:330,y:55};
 const H=Math.max(390,currentY+220);
 let path='',segmentPaths=[];const routeCoords=[home,...coords.filter(p=>!p.t.planned)];routeCoords.forEach((p,i)=>{if(i===0){path='M '+p.x+' '+p.y;return}const prev=routeCoords[i-1];let command;{const bend=Math.sin(i*1.91)*63;command=' C '+(prev.x+bend)+' '+(prev.y+(p.y-prev.y)*.42)+' '+(p.x-bend)+' '+(p.y-(p.y-prev.y)*.42)+' '+p.x+' '+p.y}path+=command;segmentPaths.push({d:'M '+prev.x+' '+prev.y+command,color:destinationColor(p.t.place)})});
 const lastVisited=coords.filter(p=>!p.t.planned).at(-1),future=coords.filter(p=>p.t.planned);
 let futurePaths='';let from=lastVisited;
 for(const target of future){if(from){const bend=Math.sin(target.i*1.91)*63;const d='M '+from.x+' '+from.y+' C '+(from.x+bend)+' '+(from.y+(target.y-from.y)*.42)+' '+(target.x-bend)+' '+(target.y-(target.y-from.y)*.42)+' '+target.x+' '+target.y;futurePaths+='<path d="'+d+'" fill="none" stroke="#9ceaff" stroke-width="5" stroke-dasharray="11 13" stroke-linecap="round" opacity=".85"/>';}from=target;}
-let nodes=coords.map(p=>{const ratio=Math.min(1,distanceKm(incheon,destinations[p.t.place]||incheon)/ecuadorReferenceKm);const radius=((27+29*ratio)*1.5*1.35*1.15*0.9).toFixed(1);const pop=(1.20+.55*ratio).toFixed(2);return '<g class="node-stop" tabindex="0" role="button" aria-label="여행 로그 보기" data-stop="'+p.i+'" style="--pop-scale:'+pop+';--destination-color:'+destinationColor(p.t.place)+'"><circle class="node-circle visited" cx="'+p.x+'" cy="'+p.y+'" r="'+radius+'" style="fill:'+destinationColor(p.t.place)+';stroke:'+destinationColor(p.t.place)+'"/>'+destinationArt(p.t.place,p.x,p.y,Number(radius))+imageMarkup(p.t.place,p.x,p.y,Number(radius),p.i,p.t.id)+'<text class="node-date" x="'+p.x+'" y="'+(p.y+94)+'">'+p.t.year+'.'+p.t.month+'</text><text class="node-label" x="'+p.x+'" y="'+(p.y+113)+'">'+esc(p.t.place)+'</text></g>'}).join('');
-timeline.querySelectorAll('svg,.empty').forEach(el=>el.remove());timeline.insertAdjacentHTML('afterbegin','<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="지그재그로 이어진 여행 연대기"><path class="route" d="'+path+'"/><path id="travelPath" class="route-inner" d="'+path+'"/><path id="completedPath" class="route-completed" style="display:none" d="'+path+'"/>'+futurePaths+segmentPaths.map((seg,i)=>'<path class="route-colored" data-segment="'+i+'" d="'+seg.d+'" stroke="'+seg.color+'"/>').join('')+'<g class="home-stop" aria-label="출발지 우리 집"><circle cx="330" cy="55" r="48" fill="#0a6389" stroke="#b9f5ff" stroke-width="4"/><text x="330" y="60" text-anchor="middle" dominant-baseline="middle" font-size="39">🏠</text><text x="330" y="119" text-anchor="middle" font-size="18" font-weight="800" fill="#e7fcff">우리 집 · 출발</text></g>'+nodes+'<image id="travelers" class="traveler-photo" href="assets/couple-fullbody.png?v=transparent3" x="-52" y="-45" width="104" height="84"/></svg>');loadDestinationPhotos();prepareProgress(routeCoords);coloredSegments=[...timeline.querySelectorAll('.route-colored')].map(el=>{const length=el.getTotalLength();el.style.strokeDasharray=length+' '+length;el.style.strokeDashoffset=length;return {el,length}});placeTraveler(progress)}
+let nodes=coords.map(p=>{const ratio=Math.min(1,distanceKm(incheon,destinations[p.t.place]||incheon)/ecuadorReferenceKm);const radius=(desktop?20+6*ratio:(27+29*ratio)*1.5*1.35*1.15*0.9).toFixed(1);const pop=(desktop?1.12:1.20+.55*ratio).toFixed(2);return '<g class="node-stop" tabindex="0" role="button" aria-label="여행 로그 보기" data-stop="'+p.i+'" style="--pop-scale:'+pop+';--destination-color:'+destinationColor(p.t.place)+'"><circle class="node-circle visited" cx="'+p.x+'" cy="'+p.y+'" r="'+radius+'" style="fill:'+destinationColor(p.t.place)+';stroke:'+destinationColor(p.t.place)+'"/>'+destinationArt(p.t.place,p.x,p.y,Number(radius))+imageMarkup(p.t.place,p.x,p.y,Number(radius),p.i,p.t.id)+'<text class="node-date" x="'+p.x+'" y="'+(p.y+(desktop?37:94))+'">'+p.t.year+'.'+p.t.month+'</text><text class="node-label" x="'+p.x+'" y="'+(p.y+(desktop?50:113))+'">'+esc(p.t.place)+'</text></g>'}).join('');
+timeline.querySelectorAll('svg,.empty').forEach(el=>el.remove());timeline.insertAdjacentHTML('afterbegin','<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="지그재그로 이어진 여행 연대기"><path class="route" d="'+path+'"/><path id="travelPath" class="route-inner" d="'+path+'"/><path id="completedPath" class="route-completed" style="display:none" d="'+path+'"/>'+futurePaths+segmentPaths.map((seg,i)=>'<path class="route-colored" data-segment="'+i+'" d="'+seg.d+'" stroke="'+seg.color+'"/>').join('')+'<g class="home-stop" aria-label="출발지 우리 집"><circle cx="'+home.x+'" cy="'+home.y+'" r="'+(desktop?22:48)+'" fill="#e9f8ff" stroke="#26333d" stroke-width="3"/><text x="'+home.x+'" y="'+(home.y+4)+'" text-anchor="middle" dominant-baseline="middle" font-size="'+(desktop?20:39)+'">🏠</text><text x="'+home.x+'" y="'+(home.y+(desktop?37:64))+'" text-anchor="middle" font-size="'+(desktop?12:18)+'" font-weight="800" fill="#172332">우리 집 · 출발</text></g>'+nodes+'<image id="travelers" class="traveler-photo" href="assets/couple-fullbody.png?v=transparent3" x="-52" y="-45" width="104" height="84"/></svg>');loadDestinationPhotos();prepareProgress(routeCoords);coloredSegments=[...timeline.querySelectorAll('.route-colored')].map(el=>{const length=el.getTotalLength();el.style.strokeDasharray=length+' '+length;el.style.strokeDashoffset=length;return {el,length}});placeTraveler(progress)}
 function prepareProgress(coords){const path=document.getElementById('travelPath');if(!path)return;const total=path.getTotalLength();const steps=Math.min(700,Math.max(100,coords.length*12));const samples=[];for(let i=0;i<=steps;i++){const length=total*i/steps;const pt=path.getPointAtLength(length);samples.push({length,x:pt.x,y:pt.y})}stopLengths=coords.map(p=>{let best=0,dist=Infinity;for(const pt of samples){const d=(pt.x-p.x)**2+(pt.y-p.y)**2;if(d<dist){dist=d;best=pt.length}}return best});const completed=document.getElementById('completedPath');completed.style.strokeDasharray=total+' '+total;completed.style.strokeDashoffset=total}
 function placeTraveler(t){const path=document.getElementById('travelPath'),trav=document.getElementById('travelers');if(!path||!trav)return;const len=path.getTotalLength();const pt=path.getPointAtLength(len*Math.max(0,Math.min(1,t)));trav.setAttribute('x',pt.x-52);trav.setAttribute('y',pt.y-64);const completed=document.getElementById('completedPath');if(completed){completed.style.strokeDasharray=len+' '+len;completed.style.strokeDashoffset=String(len*(1-Math.max(0,Math.min(1,t))))}const currentLength=len*Math.max(0,Math.min(1,t));coloredSegments.forEach((seg,i)=>{const start=stopLengths[i]??0,end=stopLengths[i+1]??start;const fraction=end>start?Math.max(0,Math.min(1,(currentLength-start)/(end-start))):Number(currentLength>=end);seg.el.style.strokeDashoffset=String(seg.length*(1-fraction))});const stops=[...timeline.querySelectorAll('.node-stop')].filter(n=>!data()[Number(n.dataset.stop)]?.planned);stops.forEach((node,i)=>{const reached=currentLength+1>=stopLengths[i+1];node.classList.toggle('is-complete',reached);node.classList.toggle('is-current',reached&&(i===stops.length-1||currentLength+1<stopLengths[i+2]))})}
 function celebrate(index){const nodes=[...timeline.querySelectorAll('.node-stop')].filter(n=>!data()[Number(n.dataset.stop)]?.planned),trav=document.getElementById('travelers');nodes.forEach(n=>n.classList.remove('is-popping'));if(trav)trav.classList.remove('is-celebrating');if(nodes[index]){void nodes[index].getBoundingClientRect();nodes[index].classList.add('is-popping')}if(trav){void trav.getBoundingClientRect();trav.classList.add('is-celebrating')}}
@@ -187,4 +225,8 @@ timeline.addEventListener('click',e=>{const node=e.target.closest('.node-stop');
 timeline.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const node=e.target.closest('.node-stop');if(!node)return;e.preventDefault();const t=data()[Number(node.dataset.stop)];if(t)openTrip(t,node)});
 
 year.onchange=()=>{stop();shown=Infinity;progress=0;draw()};regionFilter.onchange=()=>{stop();shown=Infinity;progress=0;draw()};people.onchange=()=>{stop();shown=Infinity;progress=0;draw()};document.getElementById('play').onclick=()=>{if(raf){stop();return}if(!data().some(t=>!t.planned)){alert('아직 출발할 수 있는 여행이 없습니다.');return}progress=0;draw();lastStop=-1;phaseIndex=0;phase='arrive';phaseStart=0;document.getElementById('play').textContent='⏸ 멈추기';raf=requestAnimationFrame(animate)};fetchCloudPhotos().then(()=>{if(phase==='idle'){shown=Infinity;draw()}}).catch(e=>console.warn('Cloud photo list unavailable',e));try{draw()}catch(err){console.error('Timeline initialization error:',err);status.textContent='여행 경로 표시 중 오류: '+err.message;timeline.insertAdjacentHTML('beforeend','<p class="empty">연대기를 불러오지 못했어요. 페이지를 새로고침해 주세요.</p>')}
+
+// Re-layout only when crossing mobile/desktop breakpoint.
+const desktopBreakpoint=window.matchMedia('(min-width:1100px)');
+desktopBreakpoint.addEventListener('change',()=>{stop();progress=0;draw()});
 </script></body></html>

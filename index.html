@@ -25,11 +25,17 @@ body{background:#052b48;color:#e9faff}
 .stats{color:#c9eefa;font-size:13px;letter-spacing:.1px}
 @media(max-width:650px){.wrap{padding:15px 10px 50px}.play-row #play{min-height:62px;font-size:20px}.toolbar select{flex:1 1 42%;max-width:none;min-height:46px;padding:10px 34px 10px 13px;font-size:14px}.toolbar select:last-child{flex-basis:100%}}
 
-/* Ocean Calm — scenic underwater blue with restrained glass controls */
+/* Ocean Calm — tropical island sky above, turquoise reef below; mobile-first */
 body{background:#05375d;color:#effbff}
-.wrap{background:linear-gradient(180deg,#0478b45c 0%,#006ba538 26%,#074c7b8c 56%,#032f55 100%),url("https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1600&q=85") center top / 100% auto no-repeat,radial-gradient(ellipse at 50% 0%,#20bde5 0%,#0877b1 32%,#07527f 60%,#032c4e 100%);box-shadow:0 0 65px #001d3677}
+.wrap{background:
+linear-gradient(180deg,#0c85d30a 0%,#008fcb12 12%,#0088c81a 22%,#025b8b44 42%,#023c6a88 62%,#043356 100%) center top / 100% 100% no-repeat,
+url("https://images.unsplash.com/photo-1546026423-cc4642628d2b?auto=format&fit=crop&w=1300&q=85") center 640px / 100% 1280px no-repeat,
+linear-gradient(180deg,#078ac5 0%,#04648e 100%) center 610px / 100% 1320px no-repeat,
+url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1300&q=85") center top / 100% 680px no-repeat,
+linear-gradient(180deg,#138fce 0%,#08689c 22%,#063b66 52%,#032f53 100%);
+box-shadow:0 0 65px #001d3677}
 .wrap:before{opacity:.65;background:linear-gradient(165deg,#c2f7ff25 0%,transparent 34%,#2ab4dd0b 57%,transparent 100%)}
-.wrap:after{opacity:.13}
+.wrap:after{display:none}
 .heading h1{color:#f5fdff;text-shadow:0 3px 15px #013d6599}
 .heading p{color:#d0f4ff}
 .eyebrow{color:#b4f1ff}
@@ -49,7 +55,13 @@ body{background:#05375d;color:#effbff}
 .route-inner{stroke:#a5eaff;stroke-width:3}
 .route-completed{stroke:#3bd8ed;filter:drop-shadow(0 2px 3px #005b7d66)}
 .footer{color:#d4f4ff}
-@media(max-width:650px){.wrap{background-size:auto,auto 850px,auto;background-position:center top,center top,center top;padding:15px 10px 50px}}
+@media(max-width:650px){.wrap{background-size:100% 100%,auto 1320px,100% 1320px,auto 680px,100% 100%;background-position:center top,center 610px,center 600px,center top,center top;padding:15px 10px 50px}}
+
+/* Softer surface hierarchy, keeping the scenic background readable */
+.play-row #play,.play-row #play:hover{background:linear-gradient(105deg,#ffffff 0%,#d8f5ff 53%,#a3eaff 100%)!important;color:#075383!important;text-shadow:none;border-color:#e8fbff;box-shadow:0 9px 25px #00375d55}
+.toolbar select{background-color:#045b86b8;border-color:#c2efffc0}
+.character{background:#075a868c}
+.timeline{background:transparent}
 </style></head>
 <body><div class="wrap"><header class="heading"><div class="eyebrow">OUR OCEAN JOURNEY</div><span class="badge">함께한 바다의 기록</span><h1>우리 둘의<br>바다 여행 연대기 💙</h1><p>하나의 길 위에 쌓여가는 소중한 여행들</p><div class="characters"><div class="character" style="width:min(100%,420px)"><img src="assets/couple-fullbody.png?v=transparent2" alt="검정 잠수복과 카메라를 든 남편, 흰색 마스크와 고프로를 든 아내의 전신 일러스트" style="width:100%;height:auto;border-radius:14px;display:block"><strong>우리 둘의 바다 여행</strong></div></div></header>
 <div class="photo-manager-link"><a href="photos.html">📷 여행 사진 등록·관리</a></div><div class="play-row"><button class="primary" id="play">▶ 여행 시작</button></div><div class="toolbar"><select id="year"><option value="all">전체 연도</option></select><select id="region" aria-label="국내 해외 여행 필터"><option value="all">국내 + 해외</option><option value="domestic">🇰🇷 국내만</option><option value="international">🌏 해외만</option></select><select id="people" aria-label="다이빙 동행자 필터"><option value="both">💞 둘 다</option><option value="jongsang">🤿 종상</option><option value="jihee">🤿 지희</option></select></div><div class="stats" id="status"></div><div class="timeline" id="timeline"><div id="trip-overlay" class="trip-overlay" hidden><section class="trip-dialog" role="dialog" aria-modal="false" aria-labelledby="trip-title"><button id="trip-close" class="trip-close" aria-label="닫기">✕</button><div id="trip-info"></div></section></div></div><div class="footer">앞으로도 함께할 바다를 기다리며 🐬</div></div>

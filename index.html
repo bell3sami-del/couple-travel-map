@@ -92,7 +92,7 @@ function data(){return trips.filter(t=>{
  if(regionFilter.value==='domestic'&&!domesticPlaces.has(t.place))return false;
  if(regionFilter.value==='international'&&domesticPlaces.has(t.place))return false;
  // 로그북의 개인별 기록 기준: '둘 다'는 두 사람 모두 로그가 있는 여행
- if(people.value==='both')return t.jihee>0&&t.jongsang>0;
+ if(people.value==='both')return t.jihee>0||t.jongsang>0;
  if(people.value==='jongsang')return t.jongsang>0;
  if(people.value==='jihee')return t.jihee>0;
  return true;

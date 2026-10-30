@@ -39,9 +39,8 @@ const savedIds=JSON.parse(localStorage.getItem('coupleTrips')||'[]');
 const migrationKey='coupleTripsVersion';const migrationVersion=localStorage.getItem(migrationKey);
 let normalizedIds=savedIds;
 if(migrationVersion!=='2026-10-cleanup-v2'){
- const oldToNew=trips.map(t=>t.id);
- // 마지막 배포에서 제거된 2025.04 라파즈(기존 index 41), 이번에 제거된 2024.06 라파즈/2024.09 시파단.
- const deletedOldIndices=[39,41,42];
+ // 직전 배포 목록에서 이번에 삭제된 2024.06 라파즈와 2024.09 시파단의 인덱스.
+ const deletedOldIndices=[39,41];
  normalizedIds=savedIds.filter(Number.isInteger).filter(id=>!deletedOldIndices.includes(id)).map(id=>id-deletedOldIndices.filter(d=>d<id).length).filter(id=>id>=0&&id<trips.length);
  localStorage.setItem('coupleTrips',JSON.stringify(normalizedIds));localStorage.setItem(migrationKey,'2026-10-cleanup-v2');
 }

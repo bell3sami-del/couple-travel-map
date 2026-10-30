@@ -7,7 +7,7 @@
 [2018,'06','보홀'],[2018,'09','제주'],[2018,'09','사이판'],[2018,'12','보홀'],
 [2019,'03','모알보알'],[2019,'06','사이판'],[2019,'07','아날라오'],[2019,'09','고성'],[2019,'10','아날라오'],[2019,'12','팔라우'],
 [2020,'04','제주'],[2020,'06','제주'],[2020,'06','울진'],[2020,'07','울진'],[2020,'09','제주'],[2020,'10','제주'],[2020,'10','강릉'],[2020,'11','영덕'],
-[2021,'08','제주'],[2021,'08','양양'],[2021,'08','고성'],[2021,'09','제주'],[2021,'10','제주'],[2021,'10','제주'],[2021,'10','대전'],[2021,'10','울릉도'],[2021,'11','제주'],
+[2021,'08','제주'],[2021,'08','양양'],[2021,'08','고성'],[2021,'09','제주'],[2021,'10','제주'],[2021,'10','제주'],[2021,'10','울릉도'],[2021,'11','제주'],
 [2022,'05','릴로안'],[2022,'09','라파즈'],[2022,'10','울릉도'],[2022,'11','베르데'],
 [2023,'01','보홀'],[2023,'03','오키나와'],[2023,'05','시파단'],[2023,'06','릴로안'],[2023,'06','사이판'],[2023,'07','홍해'],[2023,'08','코모도'],
 [2024,'04','아날라오'],[2024,'06','라파즈'],[2024,'09','반다해'],[2024,'09','시파단'],
@@ -20,7 +20,7 @@ const icons=['⛵','🌴','🐢','🪸','🐠','🦈','🐬'];
 const incheon=[37.4602,126.4407];
 const destinations={
 '제주':[33.4996,126.5312],'고성':[38.378,128.467],'울진':[36.993,129.400],'강릉':[37.752,128.876],
-'영덕':[36.415,129.365],'양양':[38.075,128.619],'대전':[36.350,127.385],'울릉도':[37.484,130.905],
+'영덕':[36.415,129.365],'양양':[38.075,128.619],'울릉도':[37.484,130.905],
 '보홀':[9.65,123.85],'사이판':[15.19,145.75],'모알보알':[9.94,123.40],
 '아날라오':[13.76,120.93],'팔라우':[7.50,134.62],'릴로안':[9.45,123.31],
 '라파즈':[24.14,-110.31],'베르데':[13.56,120.98],'오키나와':[26.21,127.68],
@@ -30,7 +30,7 @@ const destinations={
 };
 function distanceKm(a,b){const rad=Math.PI/180,lat1=a[0]*rad,lat2=b[0]*rad,dLat=(b[0]-a[0])*rad,dLon=(b[1]-a[1])*rad;const h=Math.sin(dLat/2)**2+Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2;return 6371*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h))}
 const ecuadorReferenceKm=distanceKm(incheon,destinations['갈라파고스']);
-function travelDuration(place){const dest=destinations[place];if(!dest)return 1150;return Math.max(90,1150*Math.min(1,distanceKm(incheon,dest)/ecuadorReferenceKm))}
+function travelDuration(place){const dest=destinations[place];if(!dest)return 1150;return Math.max(50,1000*Math.min(1,distanceKm(incheon,dest)/ecuadorReferenceKm))}
 
 const selected=new Set(JSON.parse(localStorage.getItem('coupleTrips')||'[]'));
 const year=document.getElementById('year'),status=document.getElementById('status'),timeline=document.getElementById('timeline'),list=document.getElementById('trips');
@@ -40,9 +40,9 @@ function data(){return trips.filter(t=>selected.has(t.id)&&(year.value==='all'||
 function stop(){if(timer)clearInterval(timer);timer=null;if(raf)cancelAnimationFrame(raf);raf=null;phase='idle';document.getElementById('play').textContent='▶ 여행 재생'}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function draw(){const arr=data(),visible=arr;status.textContent='선택한 여행 '+arr.length+'곳 · 표시 중 '+Math.min(shown,arr.length)+'곳';if(!arr.length){timeline.innerHTML='<p class="empty">아래에서 함께한 여행을 선택하면<br>구불구불한 여행길이 만들어져요 🐠</p>';return}
-const W=660,cols=3,xs=[108,330,552],top=210,rowH=155,rows=Math.ceil(visible.length/cols),H=Math.max(155,rows*rowH+140);
-const coords=visible.map((t,i)=>{let r=Math.floor(i/cols),c=i%cols;return {x:xs[r%2===0?c:2-c],y:top+r*rowH,t,i}});
-let path='';coords.forEach((p,i)=>{if(i===0){path='M '+p.x+' '+p.y;return}const prev=coords[i-1];if(prev.y===p.y){path+=' L '+p.x+' '+p.y}else{const side=prev.x===xs[2]?xs[2]+38:xs[0]-38;path+=' Q '+side+' '+(prev.y+rowH/2)+' '+p.x+' '+p.y}});
+const W=660,cols=4,xs=[80,245,410,575],top=210,rowH=155,rows=Math.ceil(visible.length/cols),H=Math.max(155,rows*rowH+140);
+const coords=visible.map((t,i)=>{let r=Math.floor(i/cols),c=i%cols;return {x:xs[r%2===0?c:cols-1-c],y:top+r*rowH,t,i}});
+let path='';coords.forEach((p,i)=>{if(i===0){path='M '+p.x+' '+p.y;return}const prev=coords[i-1];if(prev.y===p.y){path+=' L '+p.x+' '+p.y}else{const side=prev.x===xs[cols-1]?xs[cols-1]+38:xs[0]-38;path+=' Q '+side+' '+(prev.y+rowH/2)+' '+p.x+' '+p.y}});
 let nodes=coords.map(p=>'<g class="node-stop" data-stop="'+p.i+'"><circle class="node-circle visited" cx="'+p.x+'" cy="'+p.y+'" r="29"/><text class="node-icon" x="'+p.x+'" y="'+(p.y+1)+'">'+icons[p.i%icons.length]+'</text><text class="node-date" x="'+p.x+'" y="'+(p.y+46)+'">'+p.t.year+'.'+p.t.month+'</text><text class="node-label" x="'+p.x+'" y="'+(p.y+63)+'">'+esc(p.t.place)+'</text></g>').join('');
 timeline.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="지그재그로 이어진 여행 연대기"><path class="route" d="'+path+'"/><path id="travelPath" class="route-inner" d="'+path+'"/><path id="completedPath" class="route-completed" d="'+path+'"/>'+nodes+'<image id="travelers" class="traveler-photo" href="assets/couple-fullbody.png?v=transparent3" x="-52" y="-45" width="104" height="84"/></svg>';prepareProgress(coords);placeTraveler(progress)}
 function prepareProgress(coords){const path=document.getElementById('travelPath');if(!path)return;const total=path.getTotalLength();const steps=Math.min(700,Math.max(100,coords.length*12));const samples=[];for(let i=0;i<=steps;i++){const length=total*i/steps;const pt=path.getPointAtLength(length);samples.push({length,x:pt.x,y:pt.y})}stopLengths=coords.map(p=>{let best=0,dist=Infinity;for(const pt of samples){const d=(pt.x-p.x)**2+(pt.y-p.y)**2;if(d<dist){dist=d;best=pt.length}}return best});const completed=document.getElementById('completedPath');completed.style.strokeDasharray=total+' '+total;completed.style.strokeDashoffset=total}

@@ -88,6 +88,8 @@ const year=document.getElementById('year'),status=document.getElementById('statu
 [...new Set(trips.map(t=>t.year))].forEach(y=>{let o=document.createElement('option');o.value=y;o.textContent=y+'년';year.append(o)});
 let coloredSegments=[],timer=null,shown=Infinity,raf=null,progress=0,animStart=0,animDuration=0,stopLengths=[],lastStop=-1,phaseStart=0,phaseIndex=0,phase='idle';
 function data(){return trips.filter(t=>{
+ // 직접 등록한 사진은 연도·지역·인물 필터와 무관하게 항상 표시
+ if(cloudPhotos?.has(t.id))return true;
  if(year.value!=='all'&&t.year!==Number(year.value))return false;
  if(regionFilter.value==='domestic'&&!domesticPlaces.has(t.place))return false;
  if(regionFilter.value==='international'&&domesticPlaces.has(t.place))return false;
@@ -139,5 +141,5 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)clo
 timeline.addEventListener('click',e=>{const node=e.target.closest('.node-stop');if(!node)return;const t=data()[Number(node.dataset.stop)];if(t)openTrip(t,node)});
 timeline.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const node=e.target.closest('.node-stop');if(!node)return;e.preventDefault();const t=data()[Number(node.dataset.stop)];if(t)openTrip(t,node)});
 
-year.onchange=()=>{stop();shown=Infinity;progress=0;draw()};regionFilter.onchange=()=>{stop();shown=Infinity;progress=0;draw()};people.onchange=()=>{stop();shown=Infinity;progress=0;draw()};document.getElementById('play').onclick=()=>{if(raf){stop();return}if(!data().length){alert('조건에 맞는 여행이 없습니다.');return}progress=0;draw();lastStop=-1;phaseIndex=0;phase='arrive';phaseStart=0;document.getElementById('play').textContent='⏸ 멈추기';raf=requestAnimationFrame(animate)};try{draw()}catch(err){console.error('Timeline initialization error:',err);status.textContent='여행 경로 표시 중 오류: '+err.message;timeline.insertAdjacentHTML('beforeend','<p class="empty">연대기를 불러오지 못했어요. 페이지를 새로고침해 주세요.</p>')}
+year.onchange=()=>{stop();shown=Infinity;progress=0;draw()};regionFilter.onchange=()=>{stop();shown=Infinity;progress=0;draw()};people.onchange=()=>{stop();shown=Infinity;progress=0;draw()};document.getElementById('play').onclick=()=>{if(raf){stop();return}if(!data().length){alert('조건에 맞는 여행이 없습니다.');return}progress=0;draw();lastStop=-1;phaseIndex=0;phase='arrive';phaseStart=0;document.getElementById('play').textContent='⏸ 멈추기';raf=requestAnimationFrame(animate)};fetchCloudPhotos().then(()=>{if(phase==='idle'){shown=Infinity;draw()}}).catch(e=>console.warn('Cloud photo list unavailable',e));try{draw()}catch(err){console.error('Timeline initialization error:',err);status.textContent='여행 경로 표시 중 오류: '+err.message;timeline.insertAdjacentHTML('beforeend','<p class="empty">연대기를 불러오지 못했어요. 페이지를 새로고침해 주세요.</p>')}
 </script></body></html>

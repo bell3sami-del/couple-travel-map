@@ -76,8 +76,8 @@ function tick(now){
  if(!playing)return;if(!lastFrame)lastFrame=now;
  let dt=Math.min(100,now-lastFrame);lastFrame=now;
  if(pauseLeft>0){pauseLeft-=dt;frame=requestAnimationFrame(tick);return}
- if(leg>=visible.length-1){visited=visible.length;halt();updateProgress();play.textContent='↻ 다시 여행';return}
- legElapsed+=dt;const t=Math.min(1,legElapsed/240),ease=t*t*(3-2*t);
+ if(leg>=visible.length-1||visible[leg+1]?.planned){halt();updateProgress();play.textContent=visible[leg+1]?.planned?'✓ 예정 여행 전 종료':'↻ 다시 여행';return}
+ legElapsed+=dt;const t=Math.min(1,legElapsed/276),ease=t*t*(3-2*t);
  travelDistance=routeDistances[leg]+(routeDistances[leg+1]-routeDistances[leg])*ease;
  if(t>=1){legElapsed=0;if(visible[leg+1]?.planned){travelDistance=routeDistances[leg+1]-(routeDistances[leg+1]-routeDistances[leg])*.20;halt();updateProgress();play.textContent='✓ 예정 여행 앞에서 종료';return}arrive(leg+1)}else updateProgress();
  frame=requestAnimationFrame(tick);

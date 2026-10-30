@@ -113,6 +113,10 @@ body{background:#f7f8f7;color:#19232d}
  .trip-dialog .log-count small,.trip-dialog .note{font-size:12px!important}
  .trip-close{width:32px!important;height:32px!important;font-size:18px!important}
 }
+
+/* Unregistered photos: stationary monochrome marker, no pop/rotation */
+.node-stop.is-popping .destination-placeholder{animation:none!important;transform:none!important}
+.node-stop .destination-placeholder{animation:none!important;transition:opacity .2s ease}
 </style></head>
 <body><div class="wrap"><header class="heading"><div class="eyebrow">OUR OCEAN JOURNEY</div><span class="badge">함께한 바다의 기록</span><h1>종상 지희<br>바다 여행 연대기 💙</h1><div class="characters"><div class="character" style="width:min(100%,420px)"><img src="assets/couple-fullbody.png?v=transparent2" alt="검정 잠수복과 카메라를 든 남편, 흰색 마스크와 고프로를 든 아내의 전신 일러스트" style="width:100%;height:auto;border-radius:14px;display:block"></div></div></header>
 <div class="photo-manager-link"><a href="photos.html">📷 여행 사진 등록·관리</a></div><div class="play-row"><button class="primary" id="play">▶ 여행 시작</button></div><div class="toolbar"><select id="year"><option value="all">전체 연도</option></select><select id="region" aria-label="국내 해외 여행 필터"><option value="all">국내 + 해외</option><option value="domestic">🇰🇷 국내만</option><option value="international">🌏 해외만</option></select><select id="people" aria-label="다이빙 동행자 필터"><option value="both">💞 둘 다</option><option value="jongsang">🤿 종상</option><option value="jihee">🤿 지희</option></select></div><div class="stats" id="status"></div><div class="timeline" id="timeline"><div id="trip-overlay" class="trip-overlay" hidden><section class="trip-dialog" role="dialog" aria-modal="false" aria-labelledby="trip-title"><button id="trip-close" class="trip-close" aria-label="닫기">✕</button><div id="trip-info"></div></section></div></div><div class="footer">앞으로도 함께할 바다를 기다리며 🐬</div></div>
@@ -120,8 +124,16 @@ body{background:#f7f8f7;color:#19232d}
 const trips=raw.map((r,i)=>({id:i,year:r[0],month:r[1],place:r[2],shop:r[3],jihee:r[4],jongsang:r[5],detail:r[6]||'',planned:r[0]===2026&&r[1]==='11'}));
 const icons=['⛵','🌴','🐢','🪸','🐠','🦈','🐬'];
 const destinationScenes={"모알보알":["🐟","🐟","🐟"],"아날라오":["🐌","🪸"],"팔라우":["🦈","🌊","🐟"],"릴로안":["🐟","🐟","🐟"],"라파즈":["🦭","🌊"],"베르데":["🐠","🐠","🪸"],"오키나와":["🪸","🌊","🐟"],"시파단":["🐟","🌀","🐟"],"홍해":["🐬","🐬"],"코모도":["🐠","🐟","🪸"],"반다해":["🦈","🦈","🦈"],"키커락":["🦈","🪨"],"갈라파고스":["🦈","🐦","🦈"],"푸껫":["🐠","🪨","🐟"],"사이판":["🦅","🌊"],"보홀":["🐢","🪸"],"시밀란":["🪨","🐠"],"이시가키":["🐟","🪸"]};
-function destinationArt(place,x,y,r){const items=destinationScenes[place];if(!items)return '<text class="node-icon" x="'+x+'" y="'+(y+1)+'">'+icons[(x+y)%icons.length|0]+'</text>';const main=items[0],secondary=items[1]||'🫧',third=items[2]||'🫧';return '<defs><clipPath id="sceneClip'+Math.round(x)+'_'+Math.round(y)+'"><circle cx="'+x+'" cy="'+y+'" r="'+(r-5)+'"/></clipPath></defs><g class="destination-art" clip-path="url(#sceneClip'+Math.round(x)+'_'+Math.round(y)+')" aria-label="'+esc(place)+' 해양생물 일러스트"><circle cx="'+x+'" cy="'+y+'" r="'+(r-5)+'" fill="#05678e" opacity=".92"/><path d="M '+(x-r+6)+' '+(y+8)+' Q '+x+' '+(y-2)+' '+(x+r-6)+' '+(y+9)+' L '+(x+r-6)+' '+(y+r-8)+' L '+(x-r+6)+' '+(y+r-8)+' Z" fill="#05a4b5" opacity=".48"/><text x="'+x+'" y="'+(y+4)+'" font-size="'+(r*.84)+'" text-anchor="middle" dominant-baseline="middle">'+main+'</text><text x="'+(x-r*.49)+'" y="'+(y-r*.40)+'" font-size="'+(r*.43)+'" text-anchor="middle" dominant-baseline="middle">'+secondary+'</text><text x="'+(x+r*.50)+'" y="'+(y+r*.43)+'" font-size="'+(r*.42)+'" text-anchor="middle" dominant-baseline="middle">'+third+'</text></g>'}
-
+function destinationArt(place,x,y,r){
+ // Photo-free destinations: static monochrome journal marker.
+ const id='plainClip'+Math.round(x)+'_'+Math.round(y);
+ return '<g class="destination-art destination-placeholder" aria-label="'+esc(place)+' 사진 미등록">'
+ +'<circle cx="'+x+'" cy="'+y+'" r="'+(r-5)+'" fill="#e9ebeb" stroke="#26323b" stroke-width="1.5"/>'
+ +'<g stroke="#3d4952" stroke-width="'+Math.max(1.5,r*.028)+'" fill="none" stroke-linecap="round" stroke-linejoin="round">'
+ +'<path d="M '+(x-r*.38)+' '+(y+r*.22)+' L '+(x-r*.09)+' '+(y-r*.12)+' L '+(x+r*.08)+' '+(y+r*.07)+' L '+(x+r*.23)+' '+(y-r*.09)+' L '+(x+r*.41)+' '+(y+r*.22)+'"/>'
+ +'<circle cx="'+(x-r*.21)+'" cy="'+(y-r*.25)+'" r="'+(r*.075)+'"/>'
+ +'</g></g>';
+}
 
 function imageMarkup(place,x,y,r,i,tripId){
  const size=2*(r-5),left=x-r+5,top=y-r+5;

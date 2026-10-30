@@ -11,18 +11,8 @@ body{background:#02162d;color:#e9fbff}
 <body><div class="wrap"><header class="heading"><div class="eyebrow">OUR OCEAN JOURNEY</div><span class="badge">함께한 바다의 기록</span><h1>우리 둘의<br>바다 여행 연대기 💙</h1><p>하나의 길 위에 쌓여가는 소중한 여행들</p><div class="characters"><div class="character" style="width:min(100%,420px)"><img src="assets/couple-fullbody.png?v=transparent2" alt="검정 잠수복과 카메라를 든 남편, 흰색 마스크와 고프로를 든 아내의 전신 일러스트" style="width:100%;height:auto;border-radius:14px;display:block"><strong>우리 둘의 바다 여행</strong></div></div></header>
 <div class="toolbar"><button class="primary" id="play">▶ 여행 재생</button><button id="all">전체 보기</button><select id="year"><option value="all">전체 연도</option></select><select id="region" aria-label="국내 해외 여행 필터"><option value="all">국내 + 해외</option><option value="domestic">🇰🇷 국내만</option><option value="international">🌏 해외만</option></select></div><div class="stats" id="status"></div><div class="timeline" id="timeline"></div>
 <section class="settings"><h3>💕 부부가 함께한 여행 선택</h3><p>기존 여행 기록 중 함께한 곳만 선택해 주세요. 선택 정보는 현재 브라우저에만 저장돼요.</p><div class="trip-list" id="trips"></div></section><section id="photo-credits" class="photo-credits" aria-label="사진 출처"></section><div class="footer">앞으로도 함께할 바다를 기다리며 🐬</div></div>
-<script>const raw=[
-[2018,'06','보홀'],[2018,'09','제주'],[2018,'09','사이판'],[2018,'12','보홀'],
-[2019,'03','모알보알'],[2019,'06','사이판'],[2019,'07','아날라오'],[2019,'09','고성'],[2019,'10','아날라오'],[2019,'12','팔라우'],
-[2020,'04','제주'],[2020,'06','제주'],[2020,'06','울진'],[2020,'07','울진'],[2020,'09','제주'],[2020,'10','제주'],[2020,'10','강릉'],[2020,'11','영덕'],
-[2021,'08','제주'],[2021,'08','양양'],[2021,'08','고성'],[2021,'09','제주'],[2021,'10','제주'],[2021,'10','제주'],[2021,'10','울릉도'],[2021,'11','제주'],
-[2022,'05','릴로안'],[2022,'09','라파즈'],[2022,'10','울릉도'],[2022,'11','베르데'],
-[2023,'01','보홀'],[2023,'03','오키나와'],[2023,'05','시파단'],[2023,'06','릴로안'],[2023,'06','사이판'],[2023,'07','홍해'],[2023,'08','코모도'],
-[2024,'04','아날라오'],[2024,'09','반다해'],
-[2025,'04','제주'],[2025,'05','팔라우'],[2025,'08','양양'],[2025,'09','제주'],[2025,'10','갈라파고스'],
-[2026,'03','푸껫'],[2026,'03','시밀란'],[2026,'06','오키나와'],[2026,'10','제주'],[2026,'11','이시가키']
-];
-const trips=raw.map((r,i)=>({id:i,year:r[0],month:r[1],place:r[2]}));
+<script>const raw=[[2018,"06","보홀","디퍼",12,12],[2018,"09","제주","오션트리",5,5],[2018,"09","사이판","프로다이버스",null,12],[2018,"12","보홀","저스트다이브",6,6],[2019,"03","모알보알","클럽하리",10,10],[2019,"06","사이판","프로다이버스",21,21],[2019,"07","아날라오","샤크리조트",null,6,"날짜 미기재 · 임시 7월 표시"],[2019,"09","고성","문암리조트",3,3],[2019,"10","아날라오","클럽제이",13,13],[2019,"12","팔라우","다리다이버스",9,9],[2020,"04","제주","오션트리",8,8,"4/30~5/3"],[2020,"06","제주","오션트리",10,5,"6/3~6/8"],[2020,"06","울진","H2O",2,2,"6/27"],[2020,"07","울진","문희수잠수교실",2,2,"7/8"],[2020,"09","제주","오션트리",10,10,"9/30~10/3"],[2020,"10","제주","다이브랜드",16,10,"10/15~19"],[2020,"10","강릉","해원리조트",2,2,"10/24 · 스텔라"],[2020,"11","영덕","대진다이브",3,3,"11/7 · 대진"],[2021,"08","제주","꿈꾸는고래 외 3곳",11,13,"8/9~16"],[2021,"08","양양","38마린",2,2,"8/28"],[2021,"08","고성","문암리조트",2,2,"8/29"],[2021,"09","제주","오션트리",11,11,"9/17"],[2021,"10","제주","오션트리",6,6,"10/2"],[2021,"10","제주","오션트리",9,3,"10/8"],[2021,"10","대진","대진다이브",5,5,"10/23"],[2021,"10","울릉도","아쿠아캠프",6,6,"10/29"],[2021,"11","제주","오션트리",8,5,"11/12"],[2022,"05","릴로안","건우리조트",13,13,"5/4~9"],[2022,"09","라파즈","발렌티나",11,11,"9/3~12"],[2022,"10","울릉도","현포다이브",5,5,"10/1~3"],[2022,"11","베르데","레졸루트",11,11,"11/3~7"],[2023,"01","보홀","라팡리조트",9,9,"1/20~25"],[2023,"03","오키나와","39ers",null,null,"3/1~5 · 로그 미기재"],[2023,"05","시파단","카팔라이 리조트",18,18,"5/2~8"],[2023,"06","릴로안","건우리조트",null,10,"6/1~7"],[2023,"06","사이판","프로다이버스",8,8,"6/14~18"],[2023,"07","홍해","M/Y 블루멜로디",18,18,"7/14~24"],[2023,"08","코모도","씨사파리 챙호",19,19,"8/12~20"],[2024,"04","아날라오","클럽제이",6,6,"4/12~15"],[2024,"06","말라파스쿠아","솔다이버",10,10,"6/5~9"],[2024,"09","반다해","화이트만타",19,19,"9/15~21"],[2024,"09","누사페니다","히포다이브",3,3,"9/23"],[2025,"04","말라파스쿠아","솔다이버",9,9,"4/4~8"],[2025,"04","제주","수중산책",2,2,"4/18~20 · 한림 모자반"],[2025,"05","팔라우","데이드림",19,19,"5/3~11"],[2025,"08","양양","38마린",3,3,"8/30"],[2025,"09","제주","다이브랜드",8,4,"9/5~6 · 갈치투어"],[2025,"10","갈라파고스","아쿠아어드벤쳐 / 갈라파고스 마스터",19,19,"10/5 키커락 2회 + 10/6~12 리브어보드 17회"],[2026,"03","푸껫","블루 다이브센터",3,3,"3/15"],[2026,"03","시밀란","사우스시암 SSD4",14,15,"3/17~20"],[2026,"06","오키나와","홍스타다이브",12,null,"6/3~8"],[2026,"10","제주","다이브랜드",7,null,"10/9~11"],[2026,"11","이시가키","마린메이트",8,8,"11/12~15 · 예정"]];
+const trips=raw.map((r,i)=>({id:i,year:r[0],month:r[1],place:r[2],shop:r[3],jihee:r[4],jongsang:r[5],detail:r[6]||'',planned:r[0]===2026&&r[1]==='11'}));
 const icons=['⛵','🌴','🐢','🪸','🐠','🦈','🐬'];
 const destinationScenes={"모알보알":["🐟","🐟","🐟"],"아날라오":["🐌","🪸"],"팔라우":["🦈","🌊","🐟"],"릴로안":["🐟","🐟","🐟"],"라파즈":["🦭","🌊"],"베르데":["🐠","🐠","🪸"],"오키나와":["🪸","🌊","🐟"],"시파단":["🐟","🌀","🐟"],"홍해":["🐬","🐬"],"코모도":["🐠","🐟","🪸"],"반다해":["🦈","🦈","🦈"],"키커락":["🦈","🪨"],"갈라파고스":["🦈","🐦","🦈"],"푸껫":["🐠","🪨","🐟"],"사이판":["🦅","🌊"],"보홀":["🐢","🪸"],"시밀란":["🪨","🐠"],"이시가키":["🐟","🪸"]};
 function destinationArt(place,x,y,r){const items=destinationScenes[place];if(!items)return '<text class="node-icon" x="'+x+'" y="'+(y+1)+'">'+icons[(x+y)%icons.length|0]+'</text>';const main=items[0],secondary=items[1]||'🫧',third=items[2]||'🫧';return '<g class="destination-art" aria-label="'+esc(place)+' 해양생물 일러스트"><circle cx="'+x+'" cy="'+y+'" r="'+(r-5)+'" fill="#05678e" opacity=".92"/><path d="M '+(x-r+6)+' '+(y+8)+' Q '+x+' '+(y-2)+' '+(x+r-6)+' '+(y+9)+' L '+(x+r-6)+' '+(y+r-8)+' L '+(x-r+6)+' '+(y+r-8)+' Z" fill="#05a4b5" opacity=".48"/><text x="'+x+'" y="'+(y+4)+'" font-size="'+(r*.84)+'" text-anchor="middle" dominant-baseline="middle">'+main+'</text><text x="'+(x-r*.49)+'" y="'+(y-r*.40)+'" font-size="'+(r*.43)+'" text-anchor="middle" dominant-baseline="middle">'+secondary+'</text><text x="'+(x+r*.50)+'" y="'+(y+r*.43)+'" font-size="'+(r*.42)+'" text-anchor="middle" dominant-baseline="middle">'+third+'</text></g>'}
@@ -90,21 +80,16 @@ function intensity(place){return Math.min(1,distanceKm(incheon,destinations[plac
 function destinationColor(place){const t=intensity(place);return `hsl(${Math.round(177-171*t)}, ${Math.round(72+24*t)}%, ${Math.round(43-2*t)}%)`}
 function travelDuration(place){const dest=destinations[place];if(!dest)return 640;return Math.max(32,640*Math.min(1,distanceKm(incheon,dest)/ecuadorReferenceKm))}
 
+const oldTripKeys=[["2018","06","보홀"],["2018","09","제주"],["2018","09","사이판"],["2018","12","보홀"],["2019","03","모알보알"],["2019","06","사이판"],["2019","07","아날라오"],["2019","09","고성"],["2019","10","아날라오"],["2019","12","팔라우"],["2020","04","제주"],["2020","06","제주"],["2020","06","울진"],["2020","07","울진"],["2020","09","제주"],["2020","10","제주"],["2020","10","강릉"],["2020","11","영덕"],["2021","08","제주"],["2021","08","양양"],["2021","08","고성"],["2021","09","제주"],["2021","10","제주"],["2021","10","제주"],["2021","10","울릉도"],["2021","11","제주"],["2022","05","릴로안"],["2022","09","라파즈"],["2022","10","울릉도"],["2022","11","베르데"],["2023","01","보홀"],["2023","03","오키나와"],["2023","05","시파단"],["2023","06","릴로안"],["2023","06","사이판"],["2023","07","홍해"],["2023","08","코모도"],["2024","04","아날라오"],["2024","09","반다해"],["2025","04","제주"],["2025","05","팔라우"],["2025","08","양양"],["2025","09","제주"],["2025","10","갈라파고스"],["2026","03","푸껫"],["2026","03","시밀란"],["2026","06","오키나와"],["2026","10","제주"],["2026","11","이시가키"]];
+const keyFor=(t)=>t.year+'-'+t.month+'-'+t.place;
 const savedIds=JSON.parse(localStorage.getItem('coupleTrips')||'[]');
-// 과거 인덱스 기반 선택값을 기록 삭제 이후에도 올바른 여행에 연결한다.
-const migrationKey='coupleTripsVersion';const migrationVersion=localStorage.getItem(migrationKey);
 let normalizedIds=savedIds;
-if(migrationVersion!=='2026-10-cleanup-v2'){
- // 직전 배포 목록에서 이번에 삭제된 2024.06 라파즈와 2024.09 시파단의 인덱스.
- const deletedOldIndices=[39,41];
- normalizedIds=savedIds.filter(Number.isInteger).filter(id=>!deletedOldIndices.includes(id)).map(id=>id-deletedOldIndices.filter(d=>d<id).length).filter(id=>id>=0&&id<trips.length);
- localStorage.setItem('coupleTrips',JSON.stringify(normalizedIds));localStorage.setItem(migrationKey,'2026-10-cleanup-v2');
-}
-// 2025.10 키커락 제거: 기존 선택 인덱스를 새 목록에 맞춰 보정
-if(localStorage.getItem('coupleTripsKickerCleanup')!=='1'){
- const removedIndex=trips.findIndex(t=>t.year===2025&&t.month==='10'&&t.place==='갈라파고스');
- normalizedIds=normalizedIds.filter(id=>id!==removedIndex).map(id=>id>removedIndex?id-1:id);
- localStorage.setItem('coupleTrips',JSON.stringify(normalizedIds));localStorage.setItem('coupleTripsKickerCleanup','1');
+if(localStorage.getItem('coupleTripsLogbookVersion')!=='v1'){
+ const used=new Set();
+ normalizedIds=savedIds.map(id=>{const old=oldTripKeys[id];if(!old)return -1;const k=old.join('-');const found=trips.find(t=>keyFor(t)===k&&!used.has(t.id));if(found)used.add(found.id);return found?found.id:-1}).filter(id=>id>=0);
+ // 누락되어 새로 추가된 여행은 기본적으로 선택
+ for(const t of trips){if(!oldTripKeys.some(r=>r.join('-')===keyFor(t)))normalizedIds.push(t.id)}
+ localStorage.setItem('coupleTrips',JSON.stringify([...new Set(normalizedIds)]));localStorage.setItem('coupleTripsLogbookVersion','v1');
 }
 const selected=new Set(normalizedIds);
 const regionFilter=document.getElementById('region');

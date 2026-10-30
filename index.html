@@ -88,6 +88,7 @@ const year=document.getElementById('year'),status=document.getElementById('statu
 [...new Set(trips.map(t=>t.year))].forEach(y=>{let o=document.createElement('option');o.value=y;o.textContent=y+'년';year.append(o)});
 let coloredSegments=[],timer=null,shown=Infinity,raf=null,progress=0,animStart=0,animDuration=0,stopLengths=[],lastStop=-1,phaseStart=0,phaseIndex=0,phase='idle';
 function data(){return trips.filter(t=>{
+ if(t.place==='푸껫')return false;
  // 직접 등록한 사진은 연도·지역·인물 필터와 무관하게 항상 표시
  if(cloudPhotos?.has(t.id))return true;
  if(year.value!=='all'&&t.year!==Number(year.value))return false;

@@ -19,7 +19,7 @@ body{background:#02162d;color:#e9fbff}
 [2022,'05','릴로안'],[2022,'09','라파즈'],[2022,'10','울릉도'],[2022,'11','베르데'],
 [2023,'01','보홀'],[2023,'03','오키나와'],[2023,'05','시파단'],[2023,'06','릴로안'],[2023,'06','사이판'],[2023,'07','홍해'],[2023,'08','코모도'],
 [2024,'04','아날라오'],[2024,'09','반다해'],
-[2025,'04','제주'],[2025,'05','팔라우'],[2025,'08','양양'],[2025,'09','제주'],[2025,'10','키커락'],[2025,'10','갈라파고스'],
+[2025,'04','제주'],[2025,'05','팔라우'],[2025,'08','양양'],[2025,'09','제주'],[2025,'10','갈라파고스'],
 [2026,'03','푸껫'],[2026,'03','시밀란'],[2026,'06','오키나와'],[2026,'10','제주'],[2026,'11','이시가키']
 ];
 const trips=raw.map((r,i)=>({id:i,year:r[0],month:r[1],place:r[2]}));
@@ -55,6 +55,12 @@ if(migrationVersion!=='2026-10-cleanup-v2'){
  normalizedIds=savedIds.filter(Number.isInteger).filter(id=>!deletedOldIndices.includes(id)).map(id=>id-deletedOldIndices.filter(d=>d<id).length).filter(id=>id>=0&&id<trips.length);
  localStorage.setItem('coupleTrips',JSON.stringify(normalizedIds));localStorage.setItem(migrationKey,'2026-10-cleanup-v2');
 }
+// 2025.10 키커락 제거: 기존 선택 인덱스를 새 목록에 맞춰 보정
+if(localStorage.getItem('coupleTripsKickerCleanup')!=='1'){
+ const removedIndex=trips.findIndex(t=>t.year===2025&&t.month==='10'&&t.place==='갈라파고스');
+ normalizedIds=normalizedIds.filter(id=>id!==removedIndex).map(id=>id>removedIndex?id-1:id);
+ localStorage.setItem('coupleTrips',JSON.stringify(normalizedIds));localStorage.setItem('coupleTripsKickerCleanup','1');
+}
 const selected=new Set(normalizedIds);
 const regionFilter=document.getElementById('region');
 const year=document.getElementById('year'),status=document.getElementById('status'),timeline=document.getElementById('timeline'),list=document.getElementById('trips');
@@ -64,10 +70,12 @@ function data(){return trips.filter(t=>selected.has(t.id)&&(year.value==='all'||
 function stop(){if(timer)clearInterval(timer);timer=null;if(raf)cancelAnimationFrame(raf);raf=null;phase='idle';document.getElementById('play').textContent='▶ 여행 재생'}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function draw(){const arr=data(),visible=arr;status.textContent='선택한 여행 '+arr.length+'곳 · 표시 중 '+Math.min(shown,arr.length)+'곳';if(!arr.length){timeline.innerHTML='<p class="empty">아래에서 함께한 여행을 선택하면<br>구불구불한 여행길이 만들어져요 🐠</p>';return}
-const W=660,cols=4,xs=[85,248,411,574],top=150,rowH=168,rows=Math.ceil(visible.length/cols),H=Math.max(155,rows*rowH+140);
-const coords=visible.map((t,i)=>{let r=Math.floor(i/cols),c=i%cols;return {x:xs[r%2===0?c:cols-1-c],y:top+r*rowH,t,i}});
-let path='',segmentPaths=[];coords.forEach((p,i)=>{if(i===0){path='M '+p.x+' '+p.y;return}const prev=coords[i-1];let command;if(prev.y===p.y){const mid=(prev.x+p.x)/2;command=' Q '+mid+' '+(p.y-44)+' '+p.x+' '+p.y}else{const side=prev.x===xs[cols-1]?xs[cols-1]+60:xs[0]-60;command=' C '+side+' '+(prev.y+20)+' '+side+' '+(p.y-20)+' '+p.x+' '+p.y}path+=command;segmentPaths.push({d:'M '+prev.x+' '+prev.y+command,color:destinationColor(p.t.place)})});
-let nodes=coords.map(p=>{const ratio=Math.min(1,distanceKm(incheon,destinations[p.t.place]||incheon)/ecuadorReferenceKm);const radius=(29+13*ratio).toFixed(1);const pop=(1.20+.55*ratio).toFixed(2);return '<g class="node-stop" data-stop="'+p.i+'" style="--pop-scale:'+pop+';--destination-color:'+destinationColor(p.t.place)+'"><circle class="node-circle visited" cx="'+p.x+'" cy="'+p.y+'" r="'+radius+'" style="fill:'+destinationColor(p.t.place)+';stroke:'+destinationColor(p.t.place)+'"/>'+destinationArt(p.t.place,p.x,p.y,Number(radius))+'<text class="node-date" x="'+p.x+'" y="'+(p.y+51)+'">'+p.t.year+'.'+p.t.month+'</text><text class="node-label" x="'+p.x+'" y="'+(p.y+70)+'">'+esc(p.t.place)+'</text></g>'}).join('');
+const W=660,top=155,stepY=145,H=Math.max(390,visible.length*stepY+230);
+// 아래로 진행하면서 좌우로 자유롭게 흔들리는 재현 가능한 배치
+const lanes=[110,310,535,415,170,470,255,95,375,555,225,435,125,320,520];
+const coords=visible.map((t,i)=>({x:lanes[i%lanes.length]+Math.sin(i*2.37)*22,y:top+i*stepY,t,i}));
+let path='',segmentPaths=[];coords.forEach((p,i)=>{if(i===0){path='M '+p.x+' '+p.y;return}const prev=coords[i-1];let command;{const bend=Math.sin(i*1.91)*90;command=' C '+(prev.x+bend)+' '+(prev.y+stepY*.42)+' '+(p.x-bend)+' '+(p.y-stepY*.42)+' '+p.x+' '+p.y}path+=command;segmentPaths.push({d:'M '+prev.x+' '+prev.y+command,color:destinationColor(p.t.place)})});
+let nodes=coords.map(p=>{const ratio=Math.min(1,distanceKm(incheon,destinations[p.t.place]||incheon)/ecuadorReferenceKm);const radius=(27+29*ratio).toFixed(1);const pop=(1.20+.55*ratio).toFixed(2);return '<g class="node-stop" data-stop="'+p.i+'" style="--pop-scale:'+pop+';--destination-color:'+destinationColor(p.t.place)+'"><circle class="node-circle visited" cx="'+p.x+'" cy="'+p.y+'" r="'+radius+'" style="fill:'+destinationColor(p.t.place)+';stroke:'+destinationColor(p.t.place)+'"/>'+destinationArt(p.t.place,p.x,p.y,Number(radius))+'<text class="node-date" x="'+p.x+'" y="'+(p.y+64)+'">'+p.t.year+'.'+p.t.month+'</text><text class="node-label" x="'+p.x+'" y="'+(p.y+83)+'">'+esc(p.t.place)+'</text></g>'}).join('');
 timeline.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="지그재그로 이어진 여행 연대기"><path class="route" d="'+path+'"/><path id="travelPath" class="route-inner" d="'+path+'"/><path id="completedPath" class="route-completed" style="display:none" d="'+path+'"/>'+segmentPaths.map((seg,i)=>'<path class="route-colored" data-segment="'+i+'" d="'+seg.d+'" stroke="'+seg.color+'"/>').join('')+nodes+'<image id="travelers" class="traveler-photo" href="assets/couple-fullbody.png?v=transparent3" x="-52" y="-45" width="104" height="84"/></svg>';prepareProgress(coords);coloredSegments=[...timeline.querySelectorAll('.route-colored')].map(el=>{const length=el.getTotalLength();el.style.strokeDasharray=length+' '+length;el.style.strokeDashoffset=length;return {el,length}});placeTraveler(progress)}
 function prepareProgress(coords){const path=document.getElementById('travelPath');if(!path)return;const total=path.getTotalLength();const steps=Math.min(700,Math.max(100,coords.length*12));const samples=[];for(let i=0;i<=steps;i++){const length=total*i/steps;const pt=path.getPointAtLength(length);samples.push({length,x:pt.x,y:pt.y})}stopLengths=coords.map(p=>{let best=0,dist=Infinity;for(const pt of samples){const d=(pt.x-p.x)**2+(pt.y-p.y)**2;if(d<dist){dist=d;best=pt.length}}return best});const completed=document.getElementById('completedPath');completed.style.strokeDasharray=total+' '+total;completed.style.strokeDashoffset=total}
 function placeTraveler(t){const path=document.getElementById('travelPath'),trav=document.getElementById('travelers');if(!path||!trav)return;const len=path.getTotalLength();const pt=path.getPointAtLength(len*Math.max(0,Math.min(1,t)));trav.setAttribute('x',pt.x-52);trav.setAttribute('y',pt.y-64);const completed=document.getElementById('completedPath');if(completed){completed.style.strokeDasharray=len+' '+len;completed.style.strokeDashoffset=String(len*(1-Math.max(0,Math.min(1,t))))}const currentLength=len*Math.max(0,Math.min(1,t));coloredSegments.forEach((seg,i)=>{const start=stopLengths[i]??0,end=stopLengths[i+1]??start;const fraction=end>start?Math.max(0,Math.min(1,(currentLength-start)/(end-start))):Number(currentLength>=end);seg.el.style.strokeDashoffset=String(seg.length*(1-fraction))});const stops=timeline.querySelectorAll('.node-stop');stops.forEach((node,i)=>{const reached=currentLength+1>=stopLengths[i];node.classList.toggle('is-complete',reached);node.classList.toggle('is-current',reached&&(i===stops.length-1||currentLength+1<stopLengths[i+1]))})}

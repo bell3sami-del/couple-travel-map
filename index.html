@@ -179,8 +179,7 @@ const year=document.getElementById('year'),status=document.getElementById('statu
 let coloredSegments=[],timer=null,shown=Infinity,raf=null,progress=0,animStart=0,animDuration=0,stopLengths=[],lastStop=-1,phaseStart=0,phaseIndex=0,phase='idle';
 function data(){return trips.filter(t=>{
  if(t.place==='푸껫')return false;
- // 직접 등록한 사진은 연도·지역·인물 필터와 무관하게 항상 표시
- if(cloudPhotos?.has(t.id))return true;
+ // 등록된 사진도 선택한 연도·지역·인물 필터를 따라야 해.
  if(year.value!=='all'&&t.year!==Number(year.value))return false;
  if(regionFilter.value==='domestic'&&!domesticPlaces.has(t.place))return false;
  if(regionFilter.value==='international'&&domesticPlaces.has(t.place))return false;

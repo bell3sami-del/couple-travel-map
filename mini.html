@@ -66,28 +66,29 @@ function updateProgress(){
  progressLabel.textContent=visited+' / '+visible.length;positionDiver();
 }
 function arrive(index){
+ if(visible[index]?.planned)return;
  visited=index+1;leg=index;travelDistance=routeDistances[index]||0;
  const node=track.querySelector('[data-index="'+index+'"]');
  if(node){node.classList.remove('arriving');void node.offsetWidth;node.classList.add('arriving')}
- updateProgress();pauseLeft=150;
+ updateProgress();pauseLeft=75;
 }
 function tick(now){
  if(!playing)return;if(!lastFrame)lastFrame=now;
  let dt=Math.min(100,now-lastFrame);lastFrame=now;
  if(pauseLeft>0){pauseLeft-=dt;frame=requestAnimationFrame(tick);return}
  if(leg>=visible.length-1){visited=visible.length;halt();updateProgress();play.textContent='↻ 다시 여행';return}
- legElapsed+=dt;const t=Math.min(1,legElapsed/480),ease=t*t*(3-2*t);
+ legElapsed+=dt;const t=Math.min(1,legElapsed/240),ease=t*t*(3-2*t);
  travelDistance=routeDistances[leg]+(routeDistances[leg+1]-routeDistances[leg])*ease;
- if(t>=1){legElapsed=0;arrive(leg+1)}else updateProgress();
+ if(t>=1){legElapsed=0;if(visible[leg+1]?.planned){travelDistance=routeDistances[leg+1]-(routeDistances[leg+1]-routeDistances[leg])*.20;halt();updateProgress();play.textContent='✓ 예정 여행 앞에서 종료';return}arrive(leg+1)}else updateProgress();
  frame=requestAnimationFrame(tick);
 }
 play.addEventListener('click',()=>{
  if(playing){halt();updateProgress();return}
  if(!visible.length)return;
- if(visited>=visible.length){visited=0;leg=0;legElapsed=0;travelDistance=0;pauseLeft=0}
+ if(visited>=visible.length||visible[leg+1]?.planned&&visited>0){visited=0;leg=0;legElapsed=0;travelDistance=0;pauseLeft=0}
  if(!routePath)layoutRoute();
  playing=true;lastFrame=0;play.textContent='Ⅱ 일시정지';
- if(visited===0)arrive(0);else updateProgress();
+ if(visited===0){if(visible[0]?.planned){halt();play.textContent='예정된 여행';return}arrive(0)}else updateProgress();
  frame=requestAnimationFrame(tick);
 });
 [year,region,people].forEach(el=>el.addEventListener('change',()=>{leg=0;legElapsed=0;pauseLeft=0;routePath=null;draw()}));

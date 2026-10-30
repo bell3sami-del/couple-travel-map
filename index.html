@@ -99,7 +99,7 @@ function draw(){if(!overlay.hidden)closeTrip();const arr=data(),visible=arr;stat
 const W=660,top=165;
 // 여행 사이의 시간 간격에 따라 세로 이동 거리 조절 (최소 85 ~ 최대 245 SVG 단위)
 // 날짜가 미기재된 여행은 해당 월의 중순을 임시 기준으로 계산
-const tripDate=t=>{const match=t.detail?.match(/(?:^|\\s)(\\d{1,2})\\/(\\d{1,2})/);return Date.UTC(t.year,Number(t.month)-1,match?Number(match[2]):15)};
+const tripDate=t=>{const match=t.detail?.match(/(\d{1,2})\/(\d{1,2})/);return Date.UTC(t.year,Number(t.month)-1,match?Number(match[2]):15)};
 const gapFor=(prev,next)=>{const days=Math.max(0,(tripDate(next)-tripDate(prev))/86400000);return Math.min(245,Math.max(85,85+Math.sqrt(days)*10.5))};
 const lanes=[180,315,475,390,215,430,280,170,350,480,260,415,195,320,460];
 let currentY=top;

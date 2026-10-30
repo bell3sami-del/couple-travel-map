@@ -26,12 +26,14 @@ function imageMarkup(place,x,y,r,i,tripId){
  // 중첩 SVG의 원형 마스크: 모바일 브라우저에서도 이미지의 사각형 모서리가 보이지 않도록 이중 클리핑
  return '<svg class="photo-slot" data-photo="'+esc(place)+'" data-trip="'+tripId+'" x="'+left+'" y="'+top+'" width="'+size+'" height="'+size+'" viewBox="0 0 100 100" overflow="hidden"><defs><clipPath id="photoMask'+i+'" clipPathUnits="userSpaceOnUse"><circle cx="50" cy="50" r="50"/></clipPath></defs><image class="destination-photo" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice" clip-path="url(#photoMask'+i+')" href="" style="display:none"/></svg>';
 }
-function readSavedPhoto(id){return new Promise((resolve,reject)=>{const request=indexedDB.open('coupleTravelPhotos',1);request.onupgradeneeded=()=>{if(!request.result.objectStoreNames.contains('photos'))request.result.createObjectStore('photos')};request.onerror=()=>reject(request.error);request.onsuccess=()=>{const db=request.result,tx=db.transaction('photos','readonly'),get=tx.objectStore('photos').get(id);get.onsuccess=()=>resolve(get.result||null);get.onerror=()=>reject(get.error);tx.oncomplete=()=>db.close()}})}
-function applyPhoto(slot,url){const img=slot.querySelector('image');if(!img)return;img.setAttribute('href',url);img.style.display='';slot.previousElementSibling?.classList?.add('photo-loaded');slot.closest('.node-stop')?.classList.add('has-photo');if(url.startsWith('data:'))slot.classList.add('user-photo');img.addEventListener('error',()=>{img.style.display='none';slot.previousElementSibling?.classList?.remove('photo-loaded');slot.closest('.node-stop')?.classList.remove('has-photo')},{once:true})}
+const CLOUD_URL='https://edgymzlsldphgxpitsgm.supabase.co',CLOUD_KEY='sb_publishable_9RiqtjAqKmY1LdXgHqAP8Q_sArk3oOr';
+let cloudPhotos=null;
+async function fetchCloudPhotos(){if(cloudPhotos)return cloudPhotos;const res=await fetch(CLOUD_URL+'/rest/v1/travel_photos?select=trip_id,object_path',{headers:{apikey:CLOUD_KEY}});if(!res.ok)throw Error('Cloud photos '+res.status);const rows=await res.json();cloudPhotos=new Map(rows.map(r=>[r.trip_id,CLOUD_URL+'/storage/v1/object/public/travel-photos/'+r.object_path]));return cloudPhotos}
+function applyPhoto(slot,url){const img=slot.querySelector('image');if(!img)return;img.setAttribute('href',url);img.style.display='';slot.previousElementSibling?.classList?.add('photo-loaded');slot.closest('.node-stop')?.classList.add('has-photo');if(url.includes('/storage/v1/object/public/travel-photos/'))slot.classList.add('user-photo');img.addEventListener('error',()=>{img.style.display='none';slot.previousElementSibling?.classList?.remove('photo-loaded');slot.closest('.node-stop')?.classList.remove('has-photo')},{once:true})}
 function loadDestinationPhotos(){
  const slots=[...timeline.querySelectorAll('.photo-slot')];const places=[...new Set(slots.map(el=>el.dataset.photo))];
  const credits=document.getElementById('photo-credits');
- Promise.all(slots.map(async slot=>{try{const data=await readSavedPhoto(Number(slot.dataset.trip));if(data){applyPhoto(slot,data);return true}}catch(e){console.warn('Local photo unavailable',e)}return false})).then(saved=>Promise.all(places.map(async place=>{
+ Promise.all(slots.map(async slot=>{try{const data=(await fetchCloudPhotos()).get(Number(slot.dataset.trip));if(data){applyPhoto(slot,data);return true}}catch(e){console.warn('Cloud photo unavailable',e)}return false})).then(saved=>Promise.all(places.map(async place=>{
   if(!photoSearches[place])return;
   let photo=photoCache.get(place);
   if(!photo){

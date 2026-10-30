@@ -25,43 +25,32 @@ body{background:#052b48;color:#e9faff}
 .stats{color:#c9eefa;font-size:13px;letter-spacing:.1px}
 @media(max-width:650px){.wrap{padding:15px 10px 50px}.play-row #play{min-height:62px;font-size:20px}.toolbar select{flex:1 1 42%;max-width:none;min-height:46px;padding:10px 34px 10px 13px;font-size:14px}.toolbar select:last-child{flex-basis:100%}}
 
-/* Ocean Calm — tropical island sky above, turquoise reef below; mobile-first */
-body{background:#05375d;color:#effbff}
-.wrap{background:
-linear-gradient(180deg,#0c85d30a 0%,#008fcb12 12%,#0088c81a 22%,#025b8b44 42%,#023c6a88 62%,#043356 100%) center top / 100% 100% no-repeat,
-url("https://images.unsplash.com/photo-1546026423-cc4642628d2b?auto=format&fit=crop&w=1300&q=85") center 640px / 100% 1280px no-repeat,
-linear-gradient(180deg,#078ac5 0%,#04648e 100%) center 610px / 100% 1320px no-repeat,
-url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1300&q=85") center top / 100% 680px no-repeat,
-linear-gradient(180deg,#138fce 0%,#08689c 22%,#063b66 52%,#032f53 100%);
-box-shadow:0 0 65px #001d3677}
-.wrap:before{opacity:.65;background:linear-gradient(165deg,#c2f7ff25 0%,transparent 34%,#2ab4dd0b 57%,transparent 100%)}
-.wrap:after{display:none}
-.heading h1{color:#f5fdff;text-shadow:0 3px 15px #013d6599}
-.heading p{color:#d0f4ff}
-.eyebrow{color:#b4f1ff}
-.badge{background:#ffffff23;border:1px solid #c4f5ff88;color:#f3fdff}
-.character{background:#034b7380;border:1px solid #9ce8f477;box-shadow:0 8px 28px #002c4e4d}
-.character strong{color:#eafcff}
-.photo-manager-link a{background:#ffffff23;border:1px solid #c7f3ff80;color:#f5fdff;box-shadow:0 5px 20px #002b4b55;backdrop-filter:blur(8px)}
-.play-row #play,.play-row #play:hover{background:linear-gradient(110deg,#65e9ed 0%,#26b9ed 48%,#1686e5 100%)!important;border:1px solid #c6ffffc4;color:#fff!important;box-shadow:0 8px 26px #003e6b66,0 1px 0 #e9ffff88 inset;text-shadow:0 1px 2px #07588877}
-.toolbar select{background-color:#075681df;border:1px solid #9bdbf29c;color:#f3fcff;box-shadow:0 5px 18px #003e6044;backdrop-filter:blur(8px);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23effcff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")}
-.toolbar select option{background:#075681;color:#fff}
-.stats{color:#d7f6ff;text-shadow:0 2px 5px #003b62}
-.timeline{background:linear-gradient(180deg,#0485c112,#033f701a);box-shadow:none}
-.node-label{fill:#f7fdff;stroke:#05436c;stroke-width:3px}
-.node-date{fill:#c6efff;stroke:#05436c;stroke-width:2px}
-.node-stop .node-circle{stroke:#efffff!important;filter:drop-shadow(0 3px 7px #005b7d88)}
-.route{stroke:#e4fbff8c;stroke-width:13}
-.route-inner{stroke:#a5eaff;stroke-width:3}
-.route-completed{stroke:#3bd8ed;filter:drop-shadow(0 2px 3px #005b7d66)}
-.footer{color:#d4f4ff}
-@media(max-width:650px){.wrap{background-size:100% 100%,auto 1320px,100% 1320px,auto 680px,100% 100%;background-position:center top,center 610px,center 600px,center top,center top;padding:15px 10px 50px}}
-
-/* Softer surface hierarchy, keeping the scenic background readable */
-.play-row #play,.play-row #play:hover{background:linear-gradient(105deg,#ffffff 0%,#d8f5ff 53%,#a3eaff 100%)!important;color:#075383!important;text-shadow:none;border-color:#e8fbff;box-shadow:0 9px 25px #00375d55}
-.toolbar select{background-color:#045b86b8;border-color:#c2efffc0}
-.character{background:#075a868c}
-.timeline{background:transparent}
+/* Hand-drawn monochrome travel journal — colorful user photos and characters preserved */
+body{background:#f7f8f7;color:#19232d}
+.wrap{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22760%22%20height%3D%221150%22%20viewBox%3D%220%200%20760%201150%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%2318232d%22%20stroke-width%3D%222.3%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20opacity%3D%22.74%22%3E%3Ccircle%20cx%3D%2287%22%20cy%3D%22120%22%20r%3D%2230%22%2F%3E%3Cpath%20d%3D%22M87%2070v-18%20M87%20170v18%20M37%20120H20%20M137%20120h18%20M52%2085%2038%2071%20M122%20155l14%2014%20M122%2085l14-14%20M52%20155l-14%2014%22%2F%3E%3Cpath%20d%3D%22M76%20114v2m21-2v2M77%20130q11%2012%2021%200%22%2F%3E%3Cpath%20d%3D%22M594%20114q15-19%2030%200%2015-19%2030%200m-81%2024q12-15%2025%200%2012-15%2025%200%22%2F%3E%3Cpath%20d%3D%22M55%20326q14-14%2028%200%2015-14%2029%200m-66%2013q10-10%2020%200%2010-10%2020%200%22%2F%3E%3Cpath%20d%3D%22M601%20340q18-16%2036%200%2018-16%2036%200%22%2F%3E%3Cpath%20d%3D%22M48%20440q35-8%2070%200m-60%2013q25-7%2050%200m-60%2012q35-8%2070%200%22%2F%3E%3Cpath%20d%3D%22M602%20452q25-7%2050%200m-35%2012q25-7%2050%200%22%2F%3E%3Cpath%20d%3D%22M73%20570q8-16%2017%200%209-16%2018%200m-40%2019q18-12%2035%200%22%2F%3E%3Cpath%20d%3D%22M614%20601q13-18%2027%200%2014-18%2028%200%22%2F%3E%3Cpath%20d%3D%22M52%20786q18-10%2036%200m-25%2016q18-10%2036%200%22%2F%3E%3Cpath%20d%3D%22M595%20792q16-10%2032%200m-19%2016q16-10%2032%200%22%2F%3E%3Cpath%20d%3D%22M48%201030q20-12%2040%200m-30%2014q20-12%2040%200%22%2F%3E%3Cpath%20d%3D%22M610%201030q18-12%2036%200m-24%2015q18-12%2036%200%22%2F%3E%3Cpath%20d%3D%22M621%20255q0-44%2016-70m-16%2045q-28-37-49-23m49%2023q32-37%2058-24m-58%2017q-7-39%2010-50m-10%2054q-31-6-48%2013m48-13q30-9%2052%2012%22%2F%3E%3Cpath%20d%3D%22M617%20251h11m-18%206h24%22%2F%3E%3Cpath%20d%3D%22M45%20918q10-35%200-68m0%2045q-26-13-23-37m23%2016q22-17%2018-44m-18%2053q-23-5-33%2012m33-29q17-5%2020-24%22%2F%3E%3Cpath%20d%3D%22M685%20925q-13-42%200-78m0%2047q22-19%2020-42m-20%2024q-25-11-25-37m25%2046q27-8%2034%2010%22%2F%3E%3Cpath%20d%3D%22M575%20967q12-9%2025%200%2012-9%2025%200m-43%2015q12-9%2025%200%22%2F%3E%3Cpath%20d%3D%22M115%20660q13-12%2027%200%2013-12%2027%200m-30%2017q13-12%2027%200%22%2F%3E%3Cpath%20d%3D%22M643%20689q14-12%2028%200%2014-12%2028%200%22%2F%3E%3Cpath%20d%3D%22M94%20258l33-21%2033%2021v37H94zM109%20267h17v16h-17zM94%20258h66%22%2F%3E%3Cpath%20d%3D%22M635%20905q11-18%2022%200%2011-18%2022%200m-40%2018q11-9%2022%200%22%2F%3E%3Cpath%20d%3D%22M58%20716q8-12%2016%200%208-12%2016%200m-28%2011q8-8%2016%200%22%2F%3E%3Cpath%20d%3D%22M631%20733q9-10%2018%200%209-10%2018%200%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%2355abc6%22%20stroke-width%3D%222%22%20opacity%3D%22.42%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M155%20355q13-6%2026%200m-22%2012q13-6%2026%200M540%20560q15-7%2030%200m-18%2014q15-7%2030%200M130%201050q13-6%2026%200m-17%2012q13-6%2026%200%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"),linear-gradient(180deg,#fff 0%,#f9fbfb 46%,#fff 100%);background-position:center top,center top;background-repeat:repeat-y,no-repeat;background-size:100% auto,100% 100%;box-shadow:0 0 30px #19232d12}
+.wrap:before,.wrap:after{display:none!important}
+.heading h1{color:#111820;text-shadow:none;letter-spacing:-1px}
+.heading p{color:#343c45}
+.eyebrow{color:#202a34;letter-spacing:3px}
+.badge{background:#fff;border:1.5px solid #172332;color:#172332}
+.character{background:#ffffffed;border:2px solid #1b2732;box-shadow:3px 4px 0 #19232d18}
+.character strong{color:#172332}
+.photo-manager-link a{background:#fff;border:2px solid #1b2732;color:#19232d;box-shadow:2px 3px 0 #19232d14}
+.play-row #play,.play-row #play:hover{background:linear-gradient(105deg,#f8fdff,#d5f5ff 58%,#a7e6f9)!important;border:2px solid #1b2732;color:#163a59!important;box-shadow:3px 4px 0 #17233220;text-shadow:none}
+.toolbar select{background-color:#ffffffed;border:2px solid #1b2732;color:#1b2732;box-shadow:2px 3px 0 #17233212;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%231b2732' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")}
+.toolbar select option{background:#fff;color:#172332}
+.stats{color:#1d2730;text-shadow:0 1px #fff}
+.timeline{background:transparent;box-shadow:none}
+.node-label{fill:#151e28;stroke:#fff;stroke-width:3px}
+.node-date{fill:#303b45;stroke:#fff;stroke-width:2px}
+.node-stop .node-circle{stroke:#202c36!important;stroke-width:3;filter:drop-shadow(0 2px 2px #00000020)}
+.route{stroke:#ffffff;stroke-width:10}
+.route-inner{stroke:#202a34;stroke-width:3;stroke-dasharray:5 9}
+.route-completed{stroke:#202a34;filter:none}
+.footer{color:#26333d}
+.settings{background:#fffffff0;border:1.5px solid #202c36;color:#172332}
+.settings p{color:#4e5962}
+@media(max-width:650px){.wrap{padding:15px 10px 50px;background-size:100% auto,100% 100%}}
 </style></head>
 <body><div class="wrap"><header class="heading"><div class="eyebrow">OUR OCEAN JOURNEY</div><span class="badge">함께한 바다의 기록</span><h1>우리 둘의<br>바다 여행 연대기 💙</h1><p>하나의 길 위에 쌓여가는 소중한 여행들</p><div class="characters"><div class="character" style="width:min(100%,420px)"><img src="assets/couple-fullbody.png?v=transparent2" alt="검정 잠수복과 카메라를 든 남편, 흰색 마스크와 고프로를 든 아내의 전신 일러스트" style="width:100%;height:auto;border-radius:14px;display:block"><strong>우리 둘의 바다 여행</strong></div></div></header>
 <div class="photo-manager-link"><a href="photos.html">📷 여행 사진 등록·관리</a></div><div class="play-row"><button class="primary" id="play">▶ 여행 시작</button></div><div class="toolbar"><select id="year"><option value="all">전체 연도</option></select><select id="region" aria-label="국내 해외 여행 필터"><option value="all">국내 + 해외</option><option value="domestic">🇰🇷 국내만</option><option value="international">🌏 해외만</option></select><select id="people" aria-label="다이빙 동행자 필터"><option value="both">💞 둘 다</option><option value="jongsang">🤿 종상</option><option value="jihee">🤿 지희</option></select></div><div class="stats" id="status"></div><div class="timeline" id="timeline"><div id="trip-overlay" class="trip-overlay" hidden><section class="trip-dialog" role="dialog" aria-modal="false" aria-labelledby="trip-title"><button id="trip-close" class="trip-close" aria-label="닫기">✕</button><div id="trip-info"></div></section></div></div><div class="footer">앞으로도 함께할 바다를 기다리며 🐬</div></div>

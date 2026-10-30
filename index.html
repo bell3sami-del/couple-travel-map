@@ -100,10 +100,10 @@ const W=660,top=165;
 // 여행 사이의 시간 간격에 따라 세로 이동 거리 조절 (최소 85 ~ 최대 245 SVG 단위)
 // 날짜가 미기재된 여행은 해당 월의 중순을 임시 기준으로 계산
 const tripDate=t=>{const match=t.detail?.match(/(\d{1,2})\/(\d{1,2})/);return Date.UTC(t.year,Number(t.month)-1,match?Number(match[2]):15)};
-const gapFor=(prev,next)=>{const days=Math.max(0,(tripDate(next)-tripDate(prev))/86400000);return Math.min(245,Math.max(85,85+Math.sqrt(days)*10.5))};
-const lanes=[180,315,475,390,215,430,280,170,350,480,260,415,195,320,460];
+const gapFor=(prev,next)=>{const days=Math.max(0,(tripDate(next)-tripDate(prev))/86400000);return Math.min(174,Math.max(62,62+Math.sqrt(days)*7.5))};
+const lanes=[125,390,535,270,100,475,205,550,335,105,465,175,525,280,115];
 let currentY=top;
-const coords=visible.map((t,i)=>{if(i)currentY+=gapFor(visible[i-1],t);return {x:lanes[i%lanes.length]+Math.sin(i*2.37)*15,y:currentY,t,i}});
+const coords=visible.map((t,i)=>{if(i)currentY+=gapFor(visible[i-1],t);return {x:lanes[i%lanes.length]+Math.sin(i*2.37)*12,y:currentY,t,i}});
 const H=Math.max(390,currentY+220);
 let path='',segmentPaths=[];coords.forEach((p,i)=>{if(i===0){path='M '+p.x+' '+p.y;return}const prev=coords[i-1];let command;{const bend=Math.sin(i*1.91)*63;command=' C '+(prev.x+bend)+' '+(prev.y+(p.y-prev.y)*.42)+' '+(p.x-bend)+' '+(p.y-(p.y-prev.y)*.42)+' '+p.x+' '+p.y}path+=command;segmentPaths.push({d:'M '+prev.x+' '+prev.y+command,color:destinationColor(p.t.place)})});
 let nodes=coords.map(p=>{const ratio=Math.min(1,distanceKm(incheon,destinations[p.t.place]||incheon)/ecuadorReferenceKm);const radius=((27+29*ratio)*1.5).toFixed(1);const pop=(1.20+.55*ratio).toFixed(2);return '<g class="node-stop" tabindex="0" role="button" aria-label="여행 로그 보기" data-stop="'+p.i+'" style="--pop-scale:'+pop+';--destination-color:'+destinationColor(p.t.place)+'"><circle class="node-circle visited" cx="'+p.x+'" cy="'+p.y+'" r="'+radius+'" style="fill:'+destinationColor(p.t.place)+';stroke:'+destinationColor(p.t.place)+'"/>'+destinationArt(p.t.place,p.x,p.y,Number(radius))+imageMarkup(p.t.place,p.x,p.y,Number(radius),p.i)+'<text class="node-date" x="'+p.x+'" y="'+(p.y+94)+'">'+p.t.year+'.'+p.t.month+'</text><text class="node-label" x="'+p.x+'" y="'+(p.y+113)+'">'+esc(p.t.place)+'</text></g>'}).join('');
